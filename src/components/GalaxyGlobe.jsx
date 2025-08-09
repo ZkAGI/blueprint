@@ -203,8 +203,13 @@ const GalaxyGlobe = () => {
     const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.6 });
     const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x0088ff, transparent: true, opacity: 0.2 });
 
-    const wireframeGlobe = new THREE.Mesh(geometry, wireframeMaterial);
-    const glowGlobe = new THREE.Mesh(geometry, glowMaterial);
+     const wireframeGlobe = new THREE.Mesh(geometry, wireframeMaterial);
+     const glowGlobe = new THREE.Mesh(geometry, glowMaterial);
+
+    // Give them names so click detection can work
+wireframeGlobe.name = "clickableSphere";
+glowGlobe.name = "clickableSphere";
+
     glowGlobe.scale.set(0.95, 0.95, 0.95);
     scene.add(wireframeGlobe);
     scene.add(glowGlobe);
@@ -229,9 +234,13 @@ const GalaxyGlobe = () => {
     spriteTexture.needsUpdate = true;
 
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteTexture, transparent: true });
+    
     const textSprite = new THREE.Sprite(spriteMaterial);
     textSprite.scale.set(1.8, 0.9, 0.9);
     textSprite.position.set(0, 0, 3.5);
+
+    textSprite.raycast = () => {};
+
     scene.add(textSprite);
 
     // Camera
@@ -247,6 +256,29 @@ const GalaxyGlobe = () => {
     // Save refs
     sceneRef.current = scene;
     globeRef.current = { wireframe: wireframeGlobe, glow: glowGlobe, textSprite };
+
+    // === CLICK HANDLER ===
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+const onClick = (event) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects([wireframeGlobe, glowGlobe], true);
+
+
+const hit = intersects.find(i => i.object.name === "clickableSphere");
+if (hit) {
+
+    window.open("https://zkterminal.zkagi.ai", "_blank");
+  }
+};
+
+renderer.domElement.addEventListener("click", onClick);
+
 
     // Animate
     let rafId;
@@ -278,6 +310,7 @@ const GalaxyGlobe = () => {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', handleResize);
+      renderer.domElement.removeEventListener("click", onClick);
       try {
         scene.clear();
         geometry.dispose();
