@@ -3,7 +3,7 @@ import './index.css';
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
-import TempleScene from './components/TempleScene';
+// import TempleScene from './components/TempleScene';
 import AnimatedZkAGI from '../src/components/AnimatedZkAGI';
 import Timeline from '../src/components/Timeline';
 import ScrollOverlay from '../src/components/ScrollOverlay';
