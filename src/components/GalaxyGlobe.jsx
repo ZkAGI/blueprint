@@ -1,63 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import ScrollPanel from './ScrollPanel'; // adjust path if needed
+import ScrollPanel from './ScrollPanel'; 
 
 const YEAR_COPY = {
-  2015: {
-    title: 'Origins in Academia and VR',
-    body:
-      'Studied under Prof. Steve Lavelle; co-led a VR lab at IIT Madras. TA under Prof. Lui Sha (UIUC), focusing on real-time embedded systems.',
-  },
-  2016: {
-    title: 'Robotics & Augmented Intelligence',
-    body:
-      'Built autonomous robot with Google Tango LiDAR; began Ethereum journey; AR interfaces at Mitsubishi Electric Automotive America.',
-  },
-  2017: {
-    title: 'Systems Engineering & Crypto',
-    body:
-      'Systems engineering at a cybersecurity startup; active altcoin investor—learned crypto volatility firsthand.',
-  },
-  2018: {
-    title: 'Aten Ventures Is Born',
-    body:
-      'Formed Aten Ventures LLC (USA); launched remote-first consulting/tech agency serving startups & institutions.',
-  },
-  2019: {
-    title: 'Global Client Work & Alliances',
-    body:
-      'Served clients across Chicago/SV/NY; deep collaboration with Tektorch AI for APAC enterprise AI.',
-  },
-  2020: {
-    title: 'Enterprise Tech Facilitation',
-    body:
-      'Launched Bitbaza (B2B deep-tech marketplace); facilitated $500K+ in high-ticket deals.',
-  },
-  2021: {
-    title: 'Product Pivot & AI Infra',
-    body:
-      'After 50+ enterprise interviews, Bitbaza pivoted to scalable AI product; invested in AI infra; incorporated in Singapore.',
-  },
-  2022: {
-    title: 'Bootstrapped Scaling & Web3',
-    body:
-      'Bitbaza profitable; $1M+ in value delivered; growing Web3 & mid-market adoption.',
-  },
-  2023: {
-    title: 'Agent Marketplace & Recognition',
-    body:
-      'Launched agent marketplace; EngageX adopted by 20+ Web3 projects; recognized by Startup Lithuania; refocused on infra.',
-  },
-  2024: {
-    title: 'ZkAGI Is Born',
-    body:
-      'Raised $500K+; launched ZkAGI DePIN cluster & ZkTerminal; 100K+ users; MoUs unlocking reach to 1M+ entrepreneurs; 100+ partnerships.',
-  },
-  2025: {
-    title: 'Recognition & Global Influence',
-    body:
-      '#3 in Solana AI Hackathon (AI Infra). Re-centered on enabling AI-first enterprises with product+capital+advisory.',
-  },
+  2015: { title: 'Origins in Academia and VR', body: 'Studied under Prof. Steve Lavelle; co-led a VR lab at IIT Madras. TA under Prof. Lui Sha (UIUC), focusing on real-time embedded systems.' },
+  2016: { title: 'Robotics & Augmented Intelligence', body: 'Built autonomous robot with Google Tango LiDAR; began Ethereum journey; AR interfaces at Mitsubishi Electric Automotive America.' },
+  2017: { title: 'Systems Engineering & Crypto', body: 'Systems engineering at a cybersecurity startup; active altcoin investor—learned crypto volatility firsthand.' },
+  2018: { title: 'Aten Ventures Is Born', body: 'Formed Aten Ventures LLC (USA); launched remote-first consulting/tech agency serving startups & institutions.' },
+  2019: { title: 'Global Client Work & Alliances', body: 'Served clients across Chicago/SV/NY; deep collaboration with Tektorch AI for APAC enterprise AI.' },
+  2020: { title: 'Enterprise Tech Facilitation', body: 'Launched Bitbaza (B2B deep-tech marketplace); facilitated $500K+ in high-ticket deals.' },
+  2021: { title: 'Product Pivot & AI Infra', body: 'After 50+ enterprise interviews, Bitbaza pivoted to scalable AI product; invested in AI infra; incorporated in Singapore.' },
+  2022: { title: 'Bootstrapped Scaling & Web3', body: 'Bitbaza profitable; $1M+ in value delivered; growing Web3 & mid-market adoption.' },
+  2023: { title: 'Agent Marketplace & Recognition', body: 'Launched agent marketplace; EngageX adopted by 20+ Web3 projects; recognized by Startup Lithuania; refocused on infra.' },
+  2024: { title: 'ZkAGI Is Born', body: 'Raised $500K+; launched ZkAGI DePIN cluster & ZkTerminal; 100K+ users; MoUs unlocking reach to 1M+ entrepreneurs; 100+ partnerships.' },
+  2025: { title: 'Recognition & Global Influence', body: '#3 in Solana AI Hackathon (AI Infra). Re-centered on enabling AI-first enterprises with product+capital+advisory.' },
 };
 
 function YearRail({
@@ -67,9 +23,9 @@ function YearRail({
   padX = 'px-4 sm:px-8 lg:px-16',
 }) {
   const [activeIdx, setActiveIdx] = React.useState(null);
-  const [hoverable, setHoverable] = React.useState(true); // true on desktop, false on touch
+  const [hoverable, setHoverable] = React.useState(true); // desktop = true, touch = false
 
-  // detect if device supports real hover
+  // Detect desktop vs touch
   React.useEffect(() => {
     const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
     const update = () => setHoverable(mq.matches);
@@ -78,25 +34,38 @@ function YearRail({
     return () => mq.removeEventListener?.('change', update);
   }, []);
 
-  // close on outside tap/click
+  // Close on any tap/click that's NOT a year item (capture phase works better on mobile)
   React.useEffect(() => {
-    const onDocClick = (e) => {
-      const el = e.target;
-      if (!el.closest('[data-year-item]')) setActiveIdx(null);
+    const closeOnAnyTap = (e) => {
+      if (e.target.closest('[data-year-item]')) return; // let item handler run
+      setActiveIdx(null);
     };
-    document.addEventListener('click', onDocClick);
-    return () => document.removeEventListener('click', onDocClick);
+    document.addEventListener('pointerdown', closeOnAnyTap, true);
+    return () => document.removeEventListener('pointerdown', closeOnAnyTap, true);
   }, []);
 
+  const anyOpen = activeIdx !== null;
+
   return (
-    <div className={`w-full ${padX} ${className}`} style={{ paddingTop: 12, paddingBottom: 12 }}>
+    <div className={`w-full ${padX} ${className}`} style={{ paddingTop: 20, paddingBottom: 12 }}>
+      {/* Global scrim only for mobile/touch when any tooltip is open */}
+      {!hoverable && anyOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-[9998] bg-black/40"
+          aria-label="Close tooltip"
+          onClick={() => setActiveIdx(null)}
+        />
+      )}
+
       <div
         className={[
-          'flex w-full items-center overflow-x-auto overflow-y-visible',
+          'flex w-full items-center',
+          'overflow-x-auto md:overflow-visible overflow-y-visible',
           'gap-3 sm:gap-4',
           'snap-x snap-mandatory',
-          'md:overflow-visible md:justify-between',
-          'scrollbar-thin'
+          'scrollbar-thin',
+          'relative z-[60]', // keep above background
         ].join(' ')}
         style={{ touchAction: 'pan-x' }}
       >
@@ -105,62 +74,83 @@ function YearRail({
             <div
               data-year-item
               className="relative group flex-shrink-0 snap-start"
-              // hover (desktop only)
               onMouseEnter={hoverable ? () => setActiveIdx(i) : undefined}
               onMouseLeave={hoverable ? () => setActiveIdx((idx) => (idx === i ? null : idx)) : undefined}
-              // tap/click toggles (mobile + desktop)
               onClick={(e) => {
-                e.stopPropagation();
+                e.preventDefault();
+                e.stopPropagation(); // don't let global listener close immediately
                 setActiveIdx((idx) => (idx === i ? null : i));
               }}
-              onTouchStart={() => setActiveIdx(i)}
               aria-haspopup="dialog"
               aria-expanded={activeIdx === i}
             >
               <span
-                className="inline-block rounded-md px-2 py-1 text-white whitespace-nowrap tracking-wide cursor-pointer hover:text-cyan-300 transition-colors duration-200"
+                className={`inline-block rounded-md px-2 py-1 whitespace-nowrap tracking-wide cursor-pointer transition-colors duration-200 ${
+                  activeIdx === i ? 'text-cyan-300 bg-cyan-400/20' : 'text-white hover:text-cyan-300'
+                }`}
                 style={{ fontSize: 'clamp(13px, 3.5vw, 16px)', letterSpacing: '0.02em' }}
               >
                 {year}
               </span>
 
-              {/* Tooltip — stays open after tap */}
-              <div
-                className={[
-                  'absolute bottom-full mb-2 z-50',
-                  activeIdx === i ? 'opacity-100' : 'opacity-0',
-                  'transition-opacity duration-200'
-                ].join(' ')}
-                style={{
-                  left: i === 0 ? 0 : '50%',
-                  transform:
-                    i === 0
-                      ? 'translateX(0)'
-                      : i === years.length - 1
-                      ? 'translateX(-100%)'
-                      : 'translateX(-50%)',
-                  pointerEvents: activeIdx === i ? 'auto' : 'none', // interact when open
-                }}
-                role="dialog"
-              >
-                <div className="relative w-[360px] max-w-[90vw] rounded-xl border border-cyan-400/30 bg-slate-900/95 backdrop-blur-sm p-4 shadow-2xl">
-                  <div className="text-cyan-300 text-sm font-semibold mb-1">{YEAR_COPY[year]?.title}</div>
-                  <div className="text-gray-200 text-xs leading-relaxed">{YEAR_COPY[year]?.body}</div>
-
-                  {/* arrow */}
-                  <div
-                    className="absolute top-full"
-                    style={{
-                      left: i === 0 ? '24px' : i === years.length - 1 ? 'calc(100% - 24px)' : '50%',
-                      transform: i === 0 ? 'translateX(0)' : i === years.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)'
-                    }}
-                  >
-                    <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-slate-900/95"></div>
+              {/* === DESKTOP tooltip (above year) === */}
+              {hoverable && (
+                <div
+                  className={[
+                    'absolute bottom-full mb-2',
+                    activeIdx === i ? 'opacity-100 visible' : 'opacity-0 invisible',
+                    'transition-opacity duration-200',
+                    'z-[70]',
+                  ].join(' ')}
+                  style={{
+                    left: i === 0 ? 0 : '50%',
+                    transform:
+                      i === 0
+                        ? 'translateX(0)'
+                        : i === years.length - 1
+                        ? 'translateX(-100%)'
+                        : 'translateX(-50%)',
+                  }}
+                  role="dialog"
+                >
+                  <div className="relative w-[380px] max-w-[85vw] rounded-xl border border-cyan-400/30 bg-slate-900/95 backdrop-blur-sm p-4 shadow-2xl">
+                    <div className="text-cyan-300 text-sm font-semibold mb-1">{YEAR_COPY[year]?.title}</div>
+                    <div className="text-gray-200 text-xs leading-relaxed">{YEAR_COPY[year]?.body}</div>
+                    <div
+                      className="absolute top-full"
+                      style={{
+                        left: i === 0 ? '24px' : i === years.length - 1 ? 'calc(100% - 24px)' : '50%',
+                        transform:
+                          i === 0 ? 'translateX(0)' : i === years.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
+                      }}
+                    >
+                      <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-slate-900/95" />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* === MOBILE tooltip (centered) === */}
+              {!hoverable && (
+                <div
+                  className={[
+                    'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+                    activeIdx === i ? 'opacity-100 visible' : 'opacity-0 invisible',
+                    'transition-opacity duration-200',
+                    'z-[9999]',
+                  ].join(' ')}
+                  role="dialog"
+                  onClick={() => setActiveIdx(null)} // tap tooltip closes
+                >
+                  <div className="relative w-[360px] max-w-[90vw] rounded-xl border border-cyan-400/30 bg-slate-900/95 backdrop-blur-sm p-4 shadow-2xl">
+                    <div className="text-cyan-300 text-sm font-semibold mb-1">{YEAR_COPY[year]?.title}</div>
+                    <div className="text-gray-200 text-xs leading-relaxed">{YEAR_COPY[year]?.body}</div>
+                  </div>
+                </div>
+              )}
             </div>
 
+            {/* line between years */}
             {i < years.length - 1 && (
               <div
                 className={`flex-1 h-px ${dashClass}`}
@@ -174,59 +164,6 @@ function YearRail({
   );
 }
 
-
-// function YearRail({
-//   years = ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],
-//   className = '',
-//   dashClass = 'bg-white/60',
-//   padX = 'px-8 sm:px-12 lg:px-16',
-// }) {
-//   return (
-//     <div className={`w-full ${padX} ${className}`} style={{ paddingTop: '20px', paddingBottom: '20px' }}>
-//       <div className="flex items-center w-full justify-between overflow-visible">
-//         {years.map((year, i) => (
-//           <React.Fragment key={year}>
-//             {/* Year + tooltip */}
-//             <div className="relative group flex-shrink-0">
-//               <span
-//                 className="text-white whitespace-nowrap tracking-wide cursor-pointer hover:text-cyan-300 transition-colors duration-200"
-//                 style={{ fontSize: 'clamp(12px, 1.4vw, 16px)', letterSpacing: '0.02em' }}
-//               >
-//                 {year}
-//               </span>
-
-//               {/* Tooltip with smart positioning */}
-//               <div className={`pointer-events-none absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50 ${
-//                 i === 0 ? 'left-0' : i === years.length - 1 ? 'right-0' : 'left-1/2 -translate-x-1/2'
-//               }`}>
-//                 <div className="w-[400px] max-w-[85vw] rounded-xl border border-cyan-400/30 bg-slate-900/95 backdrop-blur-sm p-5 shadow-2xl">
-//                   <div className="text-cyan-300 text-sm font-semibold mb-2">{YEAR_COPY[year]?.title}</div>
-//                   <div className="text-gray-200 text-xs leading-relaxed">{YEAR_COPY[year]?.body}</div>
-
-//                   {/* Tooltip arrow */}
-//                   <div className={`absolute top-full ${
-//                     i === 0 ? 'left-6' : i === years.length - 1 ? 'right-6' : 'left-1/2 -translate-x-1/2'
-//                   }`}>
-//                     <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-slate-900/95"></div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* dash between items */}
-//             {i < years.length - 1 && (
-//               <div
-//                 className={`flex-1 h-px ${dashClass} mx-2 sm:mx-3`}
-//                 style={{ minWidth: '20px', maxWidth: '80px', opacity: 0.7 }}
-//               />
-//             )}
-//           </React.Fragment>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
 const GalaxyGlobe = () => {
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
@@ -238,11 +175,7 @@ const GalaxyGlobe = () => {
   useEffect(() => {
     if (showBlueprints && scrollRef.current) {
       setTimeout(() => {
-        scrollRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'nearest',
-        });
+        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
         const firstButton = scrollRef.current.querySelector('button, [tabindex="0"]');
         if (firstButton) firstButton.focus();
       }, 100);
@@ -251,18 +184,12 @@ const GalaxyGlobe = () => {
 
   useEffect(() => {
     if (!mountRef.current) return;
-
     const container = mountRef.current;
     const containerRect = container.getBoundingClientRect();
 
     // Scene
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      containerRect.width / containerRect.height,
-      0.1,
-      1000
-    );
+    const camera = new THREE.PerspectiveCamera(75, containerRect.width / containerRect.height, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -271,20 +198,10 @@ const GalaxyGlobe = () => {
     container.appendChild(renderer.domElement);
 
     // Globe geometry
-    const geometry = new THREE.SphereGeometry(2.5,24, 16);
+    const geometry = new THREE.SphereGeometry(2.5, 24, 16);
 
-    const wireframeMaterial = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.6,
-    });
-
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x0088ff,
-      transparent: true,
-      opacity: 0.2,
-    });
+    const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true, transparent: true, opacity: 0.6 });
+    const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x0088ff, transparent: true, opacity: 0.2 });
 
     const wireframeGlobe = new THREE.Mesh(geometry, wireframeMaterial);
     const glowGlobe = new THREE.Mesh(geometry, glowMaterial);
@@ -401,12 +318,10 @@ const GalaxyGlobe = () => {
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-start text-white text-center px-4 pt-4">
-        {/* Header */}
         <div className="mb-20">
           <p className="text-lg text-gray-300 tracking-wider">ATEN VENTURES</p>
         </div>
 
-        {/* Main Title */}
         <div className="mb-5">
           <h1 className="text-6xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent max-w-4xl">
             Blueprints to make any business AI-first
@@ -426,7 +341,7 @@ const GalaxyGlobe = () => {
         {/* Colosseum Image */}
         <div className="mb-4 relative w-full max-w-2xl">
           <div className="w-full h-full flex items-center justify-center">
-            <img src="/colosseum.png" alt="Colosseum" className="w-full h-96" />
+            <img src="/colosseum.png" alt="Colosseum" className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-contain" />
           </div>
         </div>
 
@@ -435,18 +350,13 @@ const GalaxyGlobe = () => {
 
         {/* Buttons */}
         <div className="flex gap-6 mt-20 mb-10">
-          {/* <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 font-semibold">
-            Book a call
-          </button> */}
           <button
-    onClick={() => {
-      // Stripe Payment Link redirect
-      window.location.href = 'https://tidycal.com/zkagi/blueprint-call';
-    }}
-    className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 font-semibold"
-  >
-    Book a call
-  </button>
+            onClick={() => { window.location.href = 'https://tidycal.com/zkagi/blueprint-call'; }}
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 font-semibold"
+          >
+            Book a call
+          </button>
+
           <button
             onClick={() => {
               setShowBlueprints(!showBlueprints);
@@ -467,15 +377,10 @@ const GalaxyGlobe = () => {
           </button>
         </div>
 
-        {/* === Scroll panel (futuristic parchment) === */}
+        {/* === Scroll panel === */}
         <div ref={scrollRef} className="w-full">
-          <ScrollPanel
-            open={showBlueprints}
-            // title="✦ BLUEPRINT CATALOG ✦"
-            imageUrl="./scroll-full.png"
-            className="mb-20"
-          >
-            {/* === Your existing long content goes here (unchanged) === */}
+          <ScrollPanel open={showBlueprints} imageUrl="./scroll-full.png" className="mb-20">
+             {/* === Your existing long content goes here (unchanged) === */}
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-300">
                 Aten Ventures Blueprint Catalog
@@ -597,7 +502,17 @@ const GalaxyGlobe = () => {
                 <p className="text-xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-300">
                   Let's make something incredible.
                 </p>
-                <p className="text-center text-lg font-bold text-cyan-300">🪷 Book a Blueprint Call – $100/hr</p>
+               <p className="text-center text-lg font-bold text-cyan-300">
+  <a
+    href="https://tidycal.com/zkagi/blueprint-call"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:underline"
+  >
+    🪷 Book a Blueprint Call
+  </a>
+</p>
+
               </div>
             </div>
 
@@ -627,7 +542,7 @@ const GalaxyGlobe = () => {
         </div>
       </div>
 
-      {/* CSS for galaxy background and animations */}
+      {/* CSS */}
       <style jsx>{`
         .galaxy-bg {
           background: radial-gradient(
@@ -640,58 +555,59 @@ const GalaxyGlobe = () => {
         }
         .galaxy-bg::before {
           content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-image: radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.5), transparent),
-            radial-gradient(2px 2px at 40px 70px, rgba(147, 197, 253, 0.4), transparent),
-            radial-gradient(1px 1px at 90px 40px, rgba(167, 139, 250, 0.3), transparent),
-            radial-gradient(1px 1px at 130px 80px, rgba(96, 165, 250, 0.2), transparent),
-            radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.4), transparent);
+          position: absolute; inset: 0;
+          background-image:
+            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.5), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(147,197,253,.4), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(167,139,250,.3), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(96,165,250,.2), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,.4), transparent);
           background-repeat: repeat;
           background-size: 200px 100px;
           animation: galaxyMove 20s linear infinite;
         }
-        @keyframes galaxyMove {
-          from { transform: translateY(0px); }
-          to { transform: translateY(-100px); }
-        }
-        @keyframes twinkle {
-          0%, 100% { opacity: 0; }
-          50% { opacity: 1; }
-        }
+        @keyframes galaxyMove { from { transform: translateY(0px); } to { transform: translateY(-100px); } }
+        @keyframes twinkle { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
         .animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
         .scrollbar-thin::-webkit-scrollbar { width: 8px; }
-        .scrollbar-thin::-webkit-scrollbar-track { background: rgba(30, 58, 138, 0.3); border-radius: 4px; }
-        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.7); border-radius: 4px; }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.9); }
+        .scrollbar-thin::-webkit-scrollbar-track { background: rgba(30,58,138,.3); border-radius: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(6,182,212,.7); border-radius: 4px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(6,182,212,.9); }
       `}</style>
 
       {/* Footer */}
-<footer className="w-full mt-16 border-t border-cyan-400/40 py-6">
-  <div className="flex flex-wrap justify-center gap-6 text-gray-300 text-sm">
-    <a href="https://www.linkedin.com/in/surajvenkat" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      LinkedIn (Suraj Venkat)
-    </a>
-    <a href="https://www.linkedin.com/company/aten-ventures-studio/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      LinkedIn (Aten Ventures Studio)
-    </a>
-    <a href="https://x.com/atenkrotos" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      X (Aten Krotos)
-    </a>
-    <a href="https://x.com/atenventures" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      X (Aten Ventures)
-    </a>
-    <a href="https://surajvenkat.medium.com/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      Medium
-    </a>
-    <a href="https://youtube.com/@decodingventure?feature=shared" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-300 transition-colors">
-      YouTube
-    </a>
+     {/* Footer */}
+<footer className="w-full mt-16 mb-2 border-t border-cyan-400/40">
+  <div className="mx-auto max-w-screen-2xl px-4 py-6 pb-[env(safe-area-inset-bottom)]">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://www.linkedin.com/in/surajvenkat" target="_blank" rel="noopener noreferrer">
+        LinkedIn (Suraj Venkat)
+      </a>
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://www.linkedin.com/company/aten-ventures-studio/" target="_blank" rel="noopener noreferrer">
+        LinkedIn (Aten Ventures Studio)
+      </a>
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://x.com/atenkrotos" target="_blank" rel="noopener noreferrer">
+        X (Aten Krotos)
+      </a>
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://x.com/atenventures" target="_blank" rel="noopener noreferrer">
+        X (Aten Ventures)
+      </a>
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://surajvenkat.medium.com/" target="_blank" rel="noopener noreferrer">
+        Medium
+      </a>
+      <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition"
+         href="https://youtube.com/@decodingventure?feature=shared" target="_blank" rel="noopener noreferrer">
+        YouTube
+      </a>
+    </div>
   </div>
 </footer>
+
 
     </div>
   );
