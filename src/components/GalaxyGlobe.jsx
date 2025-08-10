@@ -545,7 +545,7 @@ const GalaxyGlobe = () => {
                  </p>
                 <p className="text-center text-lg font-bold text-cyan-300">
    <a
-     href="https:tidycal.com/zkagi/blueprint-call"
+     href="https://tidycal.com/zkagi/blueprint-call"
      target="_blank"
      rel="noopener noreferrer"
      className="hover:underline"
