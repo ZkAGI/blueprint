@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ScrollPanel from './ScrollPanel';
+import TestimonialSun from './TestimonialSun';
 
 const YEAR_COPY = {
   2015: { title: 'Origins in Academia and VR', body: 'Aten studied under Professor Steve Lavelle, a pioneer in Virtual Reality, and co-led a VR lab course for IIT Madras. Simultaneously, he was a teaching assistant under Prof. Lui Sha at the University of Illinois Urbana-Champaign — a globally recognized leader in real-time embedded systems. Aten supported Prof. Sha’s embedded systems lab, deepening his expertise in real-time architectures and mission-critical computation.' },
@@ -108,15 +109,6 @@ const Mobile = () => {
               >
                 <div className="flex items-center justify-between">
                   <h3 className="text-white text-lg font-semibold">{y}</h3>
-                  <svg
-                    className={`h-4 w-4 text-cyan-200 transition-transform duration-200 ${
-                      active ? 'rotate-180' : ''
-                    }`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
-                  </svg>
                 </div>
 
                 <div className="mt-1 text-cyan-300 text-sm font-medium">
@@ -138,65 +130,6 @@ const Mobile = () => {
   );
 };
 
-//   const Mobile = () => (
-//   <div className="md:hidden relative">
-//     {/* left rail */}
-//     <div className="absolute left-3 top-0 bottom-0 w-[2px] bg-cyan-400/40" />
-//     <ul className="space-y-4 pl-10">
-//       {years.map((y, i) => {
-//         const active = activeIdx === i;
-//         return (
-//           <li key={y} className="relative">
-//             {/* dot */}
-//             <span
-//               className={[
-//                 'absolute -left-[18px] top-5 inline-block rounded-full border cursor-pointer',
-//                 active
-//                   ? 'w-3 h-3 border-cyan-300 bg-cyan-400/30'
-//                   : 'w-3 h-3 border-cyan-300 bg-slate-900'
-//               ].join(' ')}
-//               onClick={() => setActiveIdx(active ? null : i)}
-//             />
-
-//             {/* card */}
-//             <button
-//               type="button"
-//               onClick={() => setActiveIdx(active ? null : i)}
-//               className={[
-//                 'w-full text-left rounded-2xl px-4 py-4',
-//                 'border backdrop-blur-sm transition-colors',
-//                 active
-//                   ? 'border-cyan-400/60 bg-cyan-500/10'
-//                   : 'border-cyan-400/30 bg-slate-900/60',
-//               ].join(' ')}
-//             >
-//               <div className="flex items-center justify-between">
-//                 <h3 className="text-white text-lg font-semibold">{y}</h3>
-//                 <svg
-//                   className={`h-4 w-4 text-cyan-200 transition-transform duration-200 ${
-//                     active ? 'rotate-180' : ''
-//                   }`}
-//                   viewBox="0 0 20 20"
-//                   fill="currentColor"
-//                 >
-//                   <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
-//                 </svg>
-//               </div>
-//               <div className="mt-1 text-cyan-300 text-sm font-medium">{YEAR_COPY[y]?.title}</div>
-              
-//               {/* Body only shows if active */}
-//               {active && (
-//                 <p className="mt-2 text-gray-200 text-sm leading-relaxed">
-//                   {YEAR_COPY[y]?.body}
-//                 </p>
-//               )}
-//             </button>
-//           </li>
-//         );
-//       })}
-//     </ul>
-//   </div>
-// );
 
   // ---------- DESKTOP: keep your horizontal rail ----------
   const Desktop = () => {
@@ -448,6 +381,14 @@ const GalaxyGlobe = () => {
 
         {/* Timeline (vertical on mobile, horizontal on md+) */}
         <YearRail years={['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025']} className="mt-4 md:mt-6" />
+
+        
+<TestimonialSun
+  imageSrc="/colosseum-headshot.png"
+  quote="We welcome anyone who wants to build a brighter future — for that is what Aten (or Suraj) means: the Sun."
+  name="Suraj Venkat"
+  title="Founder & CEO, ZkAGI"
+/>
 
         {/* Buttons */}
         <div className="flex gap-6 mt-8 md:mt-20 mb-10">
