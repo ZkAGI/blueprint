@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import ScrollPanel from './ScrollPanel';
 import TestimonialSun from './TestimonialSun';
+import PropertyListings from './PropertyListing';
 
 const YEAR_COPY = {
   2015: { title: 'Origins in Academia and VR', body: 'Aten studied under Professor Steve Lavelle, a pioneer in Virtual Reality, and co-led a VR lab course for IIT Madras. Simultaneously, he was a teaching assistant under Prof. Lui Sha at the University of Illinois Urbana-Champaign — a globally recognized leader in real-time embedded systems. Aten supported Prof. Sha’s embedded systems lab, deepening his expertise in real-time architectures and mission-critical computation.' },
