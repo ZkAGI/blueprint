@@ -600,6 +600,9 @@ export default function PropertyLanding() {
       
       {/* Section 2: Highlights with Image Grid */}
       <HighlightsSection />
+
+        {/* Section 5: Property Listings */}
+      <PropertyListingsSection listings={listings} err={err} />
       
       {/* Section 3: Investment Pathway Timeline */}
       <InvestmentPathwaySection />
@@ -607,8 +610,19 @@ export default function PropertyLanding() {
       {/* Section 4: Price Cards */}
       <PriceCardsSection />
       
-      {/* Section 5: Property Listings */}
-      <PropertyListingsSection listings={listings} err={err} />
+       <footer className="w-full mt-16 mb-2 border-t border-cyan-400/40">
+        <div className="mx-auto max-w-screen-2xl px-4 py-6 pb-[env(safe-area-inset-bottom)]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://www.linkedin.com/in/surajvenkat" target="_blank" rel="noopener noreferrer">LinkedIn (Suraj Venkat)</a>
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://www.linkedin.com/company/aten-ventures-studio/" target="_blank" rel="noopener noreferrer">LinkedIn (Aten Ventures Studio)</a>
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://x.com/atenkrotos" target="_blank" rel="noopener noreferrer">X (Aten Krotos)</a>
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://x.com/atenventures" target="_blank" rel="noopener noreferrer">X (Aten Ventures)</a>
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://surajvenkat.medium.com/" target="_blank" rel="noopener noreferrer">Medium</a>
+            <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://youtube.com/@decodingventure?feature=shared" target="_blank" rel="noopener noreferrer">YouTube</a>
+          </div>
+        </div>
+      </footer>
+    
     </div>
   );
 }
@@ -636,21 +650,24 @@ function HeroSection({ listing, isFallback }) {
       <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col">
         {/* Main Hero Content */}
         <div className="flex-1 flex items-center">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <div className="text-sm uppercase tracking-widest text-white/70 mb-4">
               Aten Ventures Exclusive
             </div>
             <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
               ECO-LUXURY<br />
-              BLUEPRINT:<br />
-              <span className="text-yellow-500">{listing?.projectTitle}</span>
+              BLUEPRINT<br />
+              <span className="text-yellow-500 text-xl md:text-3xl">Own a share of eco-luxury, earn passive ROI</span>
             </h1>
-            <div className="text-xl text-white/90 mb-8">
-              From ${listing?.startingInvestment} | {listing?.roiRange || "12–18%"} ROI
+            <div className="text-xl text-white/90 mb-8 w-3/4">
+         Step into eco-luxury ownership with accessible blueprints. 
+  Earn passive ROI through global rental syndicates and gain exclusive access 
+  to sustainable, high-value properties. Whether you rent them out or enjoy them yourself, 
+  each blueprint makes your asset work for you.
             </div>
-            <div className="text-lg text-white/80 mb-8">
+            {/* <div className="text-lg text-white/80 mb-8">
               Aten Ventures Exclusive
-            </div>
+            </div> */}
             
             <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors">
               {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
@@ -659,8 +676,8 @@ function HeroSection({ listing, isFallback }) {
         </div>
 
         {/* Bottom Info Cards */}
-        <div className="pb-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
+        <div className="pb-12 w-1/2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-xl">
             <InfoCard 
               icon={<MapPin className="w-6 h-6" />}
               title={listing?.location || "Bang Tao, Phuket"}
@@ -685,7 +702,7 @@ function HeroSection({ listing, isFallback }) {
 
 function InfoCard({ icon, title, subtitle }) {
   return (
-    <div className="bg-black/60 backdrop-blur border border-white/20 rounded-xl p-6 text-center">
+    <div className="bg-black/60 backdrop-blur border border-white/20 rounded-xl p-4 text-center">
       <div className="text-white/60 mb-2 flex justify-center">{icon}</div>
       <div className="text-xl font-bold text-white mb-1">{title}</div>
       <div className="text-white/60 text-sm uppercase tracking-wide">{subtitle}</div>
@@ -719,33 +736,36 @@ function HighlightsSection() {
           </div>
 
           {/* Right Column: Image Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden">
-                <ProxyImage
-                  src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop"
-                  alt="Luxury villa exterior"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="space-y-4">
-              <div className="aspect-square rounded-xl overflow-hidden">
-                <ProxyImage
-                  src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800&auto=format&fit=crop"
-                  alt="Modern interior"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="aspect-square rounded-xl overflow-hidden">
-                <ProxyImage
-                  src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop"
-                  alt="Luxury bedroom"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
+          
+          <div className="grid grid-cols-2 grid-rows-2 gap-4">
+  {/* Left: spans both rows */}
+  <div className="row-span-2 rounded-xl overflow-hidden">
+    <ProxyImage
+      src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"
+      alt="Luxury villa exterior"
+      className="w-full h-full object-cover"
+    />
+  </div>
+
+  {/* Right: top */}
+  <div className="rounded-xl overflow-hidden">
+    <ProxyImage
+      src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800&auto=format&fit=crop"
+      alt="Modern interior"
+      className="w-full h-full object-cover"
+    />
+  </div>
+
+  {/* Right: bottom */}
+  <div className="rounded-xl overflow-hidden">
+    <ProxyImage
+      src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800&auto=format&fit=crop"
+      alt="Luxury bedroom"
+      className="w-full h-full object-cover"
+    />
+  </div>
+</div>
+
         </div>
       </div>
     </section>
@@ -798,19 +818,22 @@ function PriceCardsSection() {
       name: "Basic",
       price: "$199",
       features: ["10 Page Blueprint", "+ Community Access"],
-      highlight: false
+      highlight: false,
+      checkoutUrl:"https://buy.stripe.com/28E28k4HA8zq7EYaDs18c01"
     },
     {
       name: "Standard", 
       price: "$997",
       features: ["Full ROI + Legal", "Structure Pack"],
-      highlight: true
+      highlight: true,
+      checkoutUrl:"https://buy.stripe.com/eVq5kw4HA2b2bVeh1Q18c02"
     },
     {
       name: "Premium",
       price: "$2,997", 
       features: ["+ 1-on-1 Strategy Call"],
-      highlight: false
+      highlight: false,
+      checkoutUrl:"https://buy.stripe.com/9B69AM4HAbLC4sMaDs18c03"
     }
   ];
 
@@ -844,7 +867,9 @@ function PriceCardsSection() {
                 ))}
               </div>
               
-              <button className={`w-full py-3 rounded-lg font-bold transition-colors ${
+              <button
+               onClick={() => window.location.href = tier.checkoutUrl}
+               className={`w-full py-3 rounded-lg font-bold transition-colors ${
                 tier.highlight
                   ? 'bg-yellow-500 hover:bg-yellow-400 text-black'
                   : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
@@ -859,6 +884,41 @@ function PriceCardsSection() {
   );
 }
 
+// function PropertyListingsSection({ listings, err }) {
+//   return (
+//     <section className="py-20 bg-black">
+//       <div className="container mx-auto px-4">
+//         {err && (
+//           <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-red-200">
+//             {String(err)}
+//           </div>
+//         )}
+
+//         {listings.length > 0 ? (
+//           <>
+//             <h2 className="text-4xl font-bold mb-12 text-center">Explore More Blueprints</h2>
+//             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+//               {listings.map((l, i) => (
+//                 <PropertyCard key={`${l.projectTitle}-${i}`} listing={l} />
+//               ))}
+//             </div>
+//           </>
+//         ) : (
+//           <div className="text-center max-w-2xl mx-auto">
+//             <h3 className="text-3xl font-bold mb-4">No Live Blueprints Right Now</h3>
+//             <p className="text-white/70 text-lg mb-8">
+//               Join our investor club to get first access when new eco-luxury deals drop.
+//             </p>
+//             <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors">
+//               Join Investor Club
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
 function PropertyListingsSection({ listings, err }) {
   return (
     <section className="py-20 bg-black">
@@ -869,15 +929,24 @@ function PropertyListingsSection({ listings, err }) {
           </div>
         )}
 
+        {/* Header Row */}
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-4xl font-bold">Explore Blueprints</h2>
+          <a 
+            href="/ecoluxury/listing" 
+            className="flex items-center gap-2 text-yellow-500 hover:text-yellow-400 transition-colors group"
+          >
+            <span className="text-lg font-medium">View more listings</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+
         {listings.length > 0 ? (
-          <>
-            <h2 className="text-4xl font-bold mb-12 text-center">Explore More Blueprints</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              {listings.map((l, i) => (
-                <PropertyCard key={`${l.projectTitle}-${i}`} listing={l} />
-              ))}
-            </div>
-          </>
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {listings.slice(0, 6).map((l, i) => (
+              <PropertyCard key={`${l.projectTitle}-${i}`} listing={l} />
+            ))}
+          </div>
         ) : (
           <div className="text-center max-w-2xl mx-auto">
             <h3 className="text-3xl font-bold mb-4">No Live Blueprints Right Now</h3>
