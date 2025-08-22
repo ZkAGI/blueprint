@@ -140,7 +140,7 @@ export default function PropertyDetailPage() {
               Go Back
             </button>
             <button 
-              onClick={() => navigate('/listings')}
+              onClick={() => navigate('/ecoluxury/listings')}
               className="bg-yellow-500 hover:bg-yellow-400 text-black font-medium px-6 py-3 rounded-lg transition-colors"
             >
               View All Properties

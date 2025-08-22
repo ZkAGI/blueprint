@@ -143,16 +143,23 @@ function PropertyCard({ listing, index }) {
 
   // Handle navigation to property detail page - CORRECTED VERSION
   const handleViewProperty = () => {
-    // Create URL-friendly slug from project title
-    const slug = listing?.projectTitle?.toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')           // Replace non-alphanumeric with hyphens
-      .replace(/^-+|-+$/g, '')              // Remove leading/trailing hyphens
-      .replace(/-{2,}/g, '-')               // Replace multiple hyphens with single
-      || `property-${index}`;                // Fallback if no title
+  // Find the original index in the full listings array
+  const originalIndex = listings.findIndex(l => 
+    l.projectTitle === listing.projectTitle && 
+    l.location === listing.location &&
+    l.startingInvestment === listing.startingInvestment
+  );
+  
+  const slug = listing?.projectTitle?.toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')           
+    .replace(/^-+|-+$/g, '')              
+    .replace(/-{2,}/g, '-')               
+    || `property-${originalIndex}`;                
 
-    // Navigate using React Router - this creates the URL: /property/slug?id=index
-    navigate(`/property/${slug}?id=${index}`);
-  };
+  // Use the original index from the full listings array
+  navigate(`/property/${slug}?id=${originalIndex}`);
+};
+
 
   return (
     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
@@ -597,7 +604,7 @@ export default function ListingsPage() {
             {filteredListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredListings.map((listing, i) => (
-                  <PropertyCard key={`${listing.projectTitle}-${i}`} listing={listing} />
+                  <PropertyCard key={`${listing.projectTitle}-${i}`} listing={listing} index={i} />
                 ))}
               </div>
             ) : (
