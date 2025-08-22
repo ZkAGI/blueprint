@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MapPin, TrendingUp, Home, Check, ArrowRight } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
 
 /** ---------- GOOGLE DRIVE PROXY CONVERTER ---------- */
 function convertToProxyUrl(url) {
@@ -122,8 +123,10 @@ function Header() {
   );
 }
 
-function PropertyCard({ listing }) {
+// Then update your PropertyCard function:
+function PropertyCard({ listing, index }) {
   const [idx, setIdx] = useState(0);
+  const navigate = useNavigate(); // React Router navigation hook
   
   const images = []
     .concat(
@@ -137,6 +140,19 @@ function PropertyCard({ listing }) {
     .concat(listing?.mainImage ? [listing.mainImage] : []);
     
   const shown = images.length ? images[idx % images.length] : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop";
+
+  // Handle navigation to property detail page - CORRECTED VERSION
+  const handleViewProperty = () => {
+    // Create URL-friendly slug from project title
+    const slug = listing?.projectTitle?.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')           // Replace non-alphanumeric with hyphens
+      .replace(/^-+|-+$/g, '')              // Remove leading/trailing hyphens
+      .replace(/-{2,}/g, '-')               // Replace multiple hyphens with single
+      || `property-${index}`;                // Fallback if no title
+
+    // Navigate using React Router - this creates the URL: /property/slug?id=index
+    navigate(`/property/${slug}?id=${index}`);
+  };
 
   return (
     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
@@ -156,7 +172,12 @@ function PropertyCard({ listing }) {
 
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">{listing?.projectTitle}</h3>
+          <h3 
+            className="text-xl font-bold hover:text-yellow-400 transition-colors cursor-pointer"
+            onClick={handleViewProperty}
+          >
+            {listing?.projectTitle}
+          </h3>
           {listing?.status && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -194,17 +215,115 @@ function PropertyCard({ listing }) {
 
         <div className="mb-6">
           <div className="text-sm text-white/60 mb-1">From</div>
-          <div className="text-2xl font-bold">${listing?.startingInvestment}</div>
+          <div className="text-2xl font-bold">${listing?.startingInvestment?.toLocaleString()}</div>
           <div className="text-sm text-white/60">Aten Ventures Exclusive</div>
         </div>
 
-        <button className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors">
-          BUY BLUEPRINT
+        <button 
+          onClick={handleViewProperty}
+          className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors"
+        >
+          VIEW BLUEPRINT
         </button>
       </div>
     </div>
   );
 }
+// function PropertyCard({ listing }) {
+//   const [idx, setIdx] = useState(0);
+  
+//   const images = []
+//     .concat(
+//       listing?.galleryImages
+//         ? listing.galleryImages
+//             .split(",")
+//             .map((u) => u.trim())
+//             .filter(Boolean)
+//         : []
+//     )
+//     .concat(listing?.mainImage ? [listing.mainImage] : []);
+    
+//   const shown = images.length ? images[idx % images.length] : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop";
+
+
+//   const handleViewProperty = () => {
+//     // Assuming you have a unique ID or can use the index
+//     const propertyId = listing?.id || index;
+//     const slug = listing?.projectTitle?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || `property-${propertyId}`;
+    
+//     // Navigate to property detail page
+//     window.location.href = `/property/${slug}?id=${propertyId}`;
+//     // OR if using Next.js router:
+//     // router.push(`/property/${slug}?id=${propertyId}`);
+//   };
+
+//   return (
+//     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
+//       <div className="relative h-64 overflow-hidden cursor-pointer" onClick={() => setIdx((p) => p + 1)}>
+//         <ProxyImage
+//           src={shown}
+//           alt={listing?.projectTitle}
+//           className="w-full h-full object-cover"
+//         />
+//         {images.length > 1 && (
+//           <div className="absolute top-3 right-3 bg-black/60 px-2 py-1 rounded text-xs">
+//             {(idx % images.length) + 1}/{images.length}
+//           </div>
+//         )}
+//         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+//       </div>
+
+//       <div className="p-6">
+//         <div className="flex items-center justify-between mb-4">
+//           <h3 className="text-xl font-bold">{listing?.projectTitle}</h3>
+//           {listing?.status && (
+//             <span
+//               className={`px-3 py-1 rounded-full text-xs font-medium ${
+//                 listing.status === "Available"
+//                   ? "bg-green-500/20 text-green-400"
+//                   : listing.status === "Coming Soon"
+//                   ? "bg-yellow-500/20 text-yellow-400"
+//                   : "bg-red-500/20 text-red-400"
+//               }`}
+//             >
+//               {listing.status}
+//             </span>
+//           )}
+//         </div>
+
+//         <div className="grid grid-cols-3 gap-4 mb-6">
+//           <div className="text-center">
+//             <MapPin className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//             <div className="text-sm text-white/80">{listing?.location || "—"}</div>
+//           </div>
+//           <div className="text-center">
+//             <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//             <div className="text-sm text-white/80">{listing?.roiRange || "—"}</div>
+//             <div className="text-xs text-white/60">ROI</div>
+//           </div>
+//           <div className="text-center">
+//             <Home className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//             <div className="text-sm text-white/80">{listing?.propertyType || "—"}</div>
+//           </div>
+//         </div>
+
+//         {listing?.description && (
+//           <p className="text-white/70 text-sm mb-6 line-clamp-3">{listing.description}</p>
+//         )}
+
+//         <div className="mb-6">
+//           <div className="text-sm text-white/60 mb-1">From</div>
+//           <div className="text-2xl font-bold">${listing?.startingInvestment}</div>
+//           <div className="text-sm text-white/60">Aten Ventures Exclusive</div>
+//         </div>
+
+//         <button onClick={handleViewProperty} className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors">
+//           VIEW BLUEPRINT
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
 
 // ===== MAIN LISTINGS PAGE COMPONENT =====
 export default function ListingsPage() {
