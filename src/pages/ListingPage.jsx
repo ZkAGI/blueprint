@@ -124,7 +124,7 @@ function Header() {
 }
 
 // Then update your PropertyCard function:
-function PropertyCard({ listing, index }) {
+function PropertyCard({ listing, index, listings }) {
   const [idx, setIdx] = useState(0);
   const navigate = useNavigate(); // React Router navigation hook
   
@@ -604,7 +604,7 @@ export default function ListingsPage() {
             {filteredListings.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredListings.map((listing, i) => (
-                  <PropertyCard key={`${listing.projectTitle}-${i}`} listing={listing} index={i} />
+                  <PropertyCard key={`${listing.projectTitle}-${i}`} listing={listing} index={i} listings={listings}  />
                 ))}
               </div>
             ) : (
