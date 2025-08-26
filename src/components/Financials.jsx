@@ -608,7 +608,7 @@ const maxInvestmentPerInvestor = hasPerShare
       {/* Header + per-share price */}
       <div>
         <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-green-400" />
+          <DollarSign className="w-5 h-5 text-yellow-400" />
           Total Investment
         </h3>
        
@@ -663,10 +663,10 @@ const maxInvestmentPerInvestor = hasPerShare
       <div key="roi" className={cardBase(200)}>
         <div>
           <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-yellow-400" />
+            <TrendingUp className="w-5 h-5 text-green-400" />
             Expected Returns
           </h3>
-          <div className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-1">{beforePercent}%</div>
+          <div className="text-2xl sm:text-3xl font-bold text-green-400 mb-1">{beforePercent}%</div>
           {!!afterPercent && (
             <div className="text-xs italic text-white/70 mb-1 sm:mb-2">({afterPercent.trim()})</div>
           )}
