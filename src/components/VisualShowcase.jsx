@@ -1,23 +1,70 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import ProxyImage from "../components/ProxyImage";
+
+/** Normalize Google Drive URLs to direct-view */
+function normalizeDriveUrl(url) {
+  if (!url) return url;
+  if (url.includes("/drive/folders/")) return ""; // folder links can't render as images
+  if (!url.includes("drive.google.com")) return url;
+
+  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const fileId = m1?.[1] || m2?.[1];
+  return fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : url;
+}
+
+/** Split by common separators (comma, newline, pipe), trim, drop empty */
+function splitList(val) {
+  if (!val) return [];
+  return val
+    .split(/[,|\n]/g)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+/** Unique, keep first occurrence */
+/** Unique, keep first occurrence */
+function unique(arr) {
+  const seen = new Set();
+  return arr.filter(x => {
+    if (seen.has(x)) return false;
+    seen.add(x);
+    return true;
+  });
+}
+
+
 export default function VisualShowcase({ property }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  const images = []
-    .concat(
-      property?.galleryImages
-        ? property.galleryImages.split(",").map(u => u.trim()).filter(Boolean)
-        : []
-    )
-    .concat(property?.coverImage ? [property.coverImage] : [])
-    .concat(property?.mainImage ? [property.mainImage] : []);
+  const [current, setCurrent] = useState(0);
 
-  const handleImageChange = (index) => {
-    setCurrentImageIndex(index);
-  };
+  const images = useMemo(() => {
+    const gallery = splitList(property?.galleryImages);
+    const merged = [
+      ...gallery,
+      ...(property?.coverImage ? [property.coverImage] : []),
+      ...(property?.mainImage ? [property.mainImage] : []),
+    ]
+      .map(normalizeDriveUrl)
+      .filter(Boolean);
 
-  if (!images.length) {
-    return null;
-  }
+    return unique(merged);
+  }, [property]);
+
+  if (!images.length) return null;
+
+  const total = images.length;
+  const showArrows = total > 1;
+  const showThumbs = total > 1;
+
+  // Decide thumbs style based on count
+  const thumbsMode =
+    total <= 3 ? "tight"
+    : total <= 7 ? "grid"
+    : "scroll"; // 8+ → horizontal scroll
+
+  const next = () => setCurrent((i) => (i + 1) % total);
+  const prev = () => setCurrent((i) => (i - 1 + total) % total);
+  const go = (idx) => setCurrent(idx);
 
   return (
     <section className="py-20 bg-gray-900">
@@ -29,62 +76,91 @@ export default function VisualShowcase({ property }) {
           </p>
         </div>
 
-        {/* Main Image Display */}
+        {/* Main Image */}
         <div className="max-w-6xl mx-auto mb-8">
           <div className="relative h-96 md:h-[600px] rounded-2xl overflow-hidden">
-            <img
-              src={images[currentImageIndex]}
-              alt={`${property?.projectTitle} - Image ${currentImageIndex + 1}`}
+            <ProxyImage
+              src={images[current]}
+              alt={`${property?.projectTitle || "Property"} - Image ${current + 1}`}
               className="w-full h-full object-cover"
             />
-            
-            {/* Image Navigation */}
-            {images.length > 1 && (
+
+            {showArrows && (
               <>
                 <button
-                  onClick={() => handleImageChange(currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1)}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors"
+                  onClick={prev}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors"
+                  aria-label="Previous image"
                 >
                   ←
                 </button>
                 <button
-                  onClick={() => handleImageChange(currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors"
+                  onClick={next}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 p-3 rounded-full transition-colors"
+                  aria-label="Next image"
                 >
                   →
                 </button>
-                
-                {/* Image Counter */}
                 <div className="absolute bottom-4 right-4 bg-black/60 px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {images.length}
+                  {current + 1} / {total}
                 </div>
               </>
             )}
           </div>
         </div>
 
-        {/* Image Thumbnails */}
-        {images.length > 1 && (
+        {/* Thumbnails */}
+        {showThumbs && (
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
-              {images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleImageChange(index)}
-                  className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                    index === currentImageIndex 
-                      ? 'border-yellow-500' 
-                      : 'border-white/20 hover:border-white/40'
-                  }`}
-                >
-                  <img
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {thumbsMode === "scroll" ? (
+              // 8+ images → horizontal scroll row
+              <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 pr-1">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => go(i)}
+                    className={`relative min-w-24 w-24 h-24 rounded-lg overflow-hidden border-2 flex-shrink-0 transition-all ${
+                      i === current ? "border-yellow-500" : "border-white/20 hover:border-white/40"
+                    }`}
+                    aria-label={`Thumbnail ${i + 1}`}
+                  >
+                    <ProxyImage src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : thumbsMode === "grid" ? (
+              // 4–7 images → grid
+              <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => go(i)}
+                    className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                      i === current ? "border-yellow-500" : "border-white/20 hover:border-white/40"
+                    }`}
+                    aria-label={`Thumbnail ${i + 1}`}
+                  >
+                    <ProxyImage src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              // 2–3 images → tight row
+              <div className="flex gap-2 justify-center">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => go(i)}
+                    className={`relative w-24 h-24 rounded-lg overflow-hidden border-2 transition-all ${
+                      i === current ? "border-yellow-500" : "border-white/20 hover:border-white/40"
+                    }`}
+                    aria-label={`Thumbnail ${i + 1}`}
+                  >
+                    <ProxyImage src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

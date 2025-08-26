@@ -16,6 +16,7 @@ import ClosingCTA from "../components/ClosingCTA";
 
 // Header component for the property page
 function PropertyHeader({ property, onBack }) {
+  console.log('propert',property)
   return (
     <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -174,8 +175,7 @@ export default function PropertyDetailPage() {
         {/* 6. Ownership Model */}
         <OwnershipModel property={property} />
         
-        {/* 7. Management & Fees */}
-        <ManagementFees property={property} />
+
         
         {/* 8. Exit & Liquidity */}
         <ExitLiquidity property={property} />

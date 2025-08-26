@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-// Import your ProxyImage component
-// import ProxyImage from "./ProxyImage";
+
+import ProxyImage from "./ProxyImage";
 
 // 1. PROPERTY HERO SECTION
 export default function PropertyHero({ property }) {
@@ -14,12 +14,12 @@ export default function PropertyHero({ property }) {
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <img
-          src={heroImage}
-          alt={property?.projectTitle}
-          className="w-full h-full object-cover"
-          onError={() => setImageError(true)}
-        />
+       <ProxyImage
+  src={heroImage}
+  alt={property?.projectTitle}
+  className="w-full h-full object-cover"
+/>
+
         <div className="absolute inset-0 bg-black/50" />
       </div>
       
