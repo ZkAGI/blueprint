@@ -40,7 +40,7 @@ export default function ExecutiveSnapshot({ property }) {
     }
   ];
 
-  const formatRoi = (roi?: string) => {
+  const formatRoi = (roi) => {
   if (!roi) return { main: "—", rest: "" };
   const i = roi.indexOf("%");
   if (i < 0) return { main: roi, rest: "" };

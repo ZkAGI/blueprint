@@ -683,11 +683,12 @@ function HeroSection({ listing, isFallback }) {
               title={listing?.location || "Bang Tao, Phuket"}
               subtitle="Location"
             />
-            <InfoCard 
-              icon={<TrendingUp className="w-6 h-6" />}
-              title={`${listing?.roiRange || "12–18%"}`}
-              subtitle="Modeled ROI"
-            />
+           <InfoCard
+  icon={<TrendingUp className="w-6 h-6" />}
+  title={`${String(listing?.roiRange || "12–18%").split("%")[0]}%`}
+  subtitle="Modeled ROI"
+/>
+
             <InfoCard 
               icon={<Home className="w-6 h-6" />}
               title={listing?.propertyType || "2BR Pool Villa"}
@@ -1018,11 +1019,16 @@ function PropertyCard({ listing }) {
             <MapPin className="w-5 h-5 mx-auto mb-1 text-white/60" />
             <div className="text-sm text-white/80">{listing?.location || "—"}</div>
           </div>
-          <div className="text-center">
-            <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
-            <div className="text-sm text-white/80">{listing?.roiRange || "—"}</div>
-            <div className="text-xs text-white/60">ROI</div>
-          </div>
+         <div className="text-center">
+  <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
+  <div className="text-sm text-white/80">
+    {listing?.roiRange
+      ? `${String(listing.roiRange).split("%")[0]}%`
+      : "—"}
+  </div>
+  <div className="text-xs text-white/60">ROI</div>
+</div>
+
           <div className="text-center">
             <Home className="w-5 h-5 mx-auto mb-1 text-white/60" />
             <div className="text-sm text-white/80">{listing?.propertyType || "—"}</div>
