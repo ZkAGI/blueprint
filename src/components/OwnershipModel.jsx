@@ -13,25 +13,25 @@ export default function OwnershipModel({ property }) {
 
   const tiers = [
     {
-      id: 'basic',
-      name: 'Basic Investor',
-      minInvestment: 300,
-      features: ['Quarterly reports', 'Basic dashboard access', 'Email support'],
-      color: 'bg-blue-500'
+      name: "Basic",
+      price: "$199",
+      features: ["10 Page Blueprint", "+ Community Access"],
+      highlight: false,
+      checkoutUrl:"https://buy.stripe.com/28E28k4HA8zq7EYaDs18c01"
     },
     {
-      id: 'premium',
-      name: 'Premium Investor', 
-      minInvestment: 5000,
-      features: ['Monthly reports', 'Advanced analytics', 'Priority support', 'Voting rights'],
-      color: 'bg-yellow-500'
+      name: "Standard", 
+      price: "$997",
+      features: ["Full ROI + Legal", "Structure Pack"],
+      highlight: true,
+      checkoutUrl:"https://buy.stripe.com/eVq5kw4HA2b2bVeh1Q18c02"
     },
     {
-      id: 'elite',
-      name: 'Elite Investor',
-      minInvestment: 25000,
-      features: ['Weekly reports', 'Direct manager access', 'Site visits', 'Strategic input'],
-      color: 'bg-purple-500'
+      name: "Premium",
+      price: "$2,997", 
+      features: ["+ 1-on-1 Strategy Call"],
+      highlight: false,
+      checkoutUrl:"https://buy.stripe.com/9B69AM4HAbLC4sMaDs18c03"
     }
   ];
 
@@ -94,42 +94,41 @@ export default function OwnershipModel({ property }) {
 
         {/* Investment Tiers */}
         <div className="max-w-6xl mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-8">Investment Tiers</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {tiers.map((tier) => (
-              <div 
-                key={tier.id}
-                className={`rounded-2xl p-6 border-2 cursor-pointer transition-all ${
-                  selectedTier === tier.id 
-                    ? 'border-yellow-500 bg-yellow-500/10' 
-                    : 'border-white/10 bg-white/5 hover:border-white/20'
-                }`}
-                onClick={() => setSelectedTier(tier.id)}
-              >
-                <div className="text-center mb-6">
-                  <h4 className="text-xl font-bold mb-2">{tier.name}</h4>
-                  <div className="text-3xl font-bold text-yellow-400 mb-1">
-                    ${tier.minInvestment.toLocaleString()}
-                  </div>
-                  <div className="text-white/60">Minimum investment</div>
+          <h3 className="text-2xl font-bold text-center mb-8">Blueprint Tiers</h3>
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {tiers.map((tier, i) => (
+            <div key={i} className={`relative rounded-2xl p-8 text-center border-2 ${
+              tier.highlight 
+                ? 'border-yellow-500 bg-yellow-500/10' 
+                : 'border-white/20 bg-white/5'
+            }`}>
+              {tier.highlight && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-sm font-bold">
+                  POPULAR
                 </div>
-
-                <ul className="space-y-3">
-                  {tier.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                      <span className="text-white/80">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button className="w-full mt-6 bg-yellow-500 hover:bg-yellow-400 text-black font-medium py-3 rounded-lg transition-colors">
-                  Select {tier.name}
-                </button>
+              )}
+              
+              <h3 className="text-2xl font-bold mb-4">{tier.name}</h3>
+              <div className="text-4xl font-bold mb-6">{tier.price}</div>
+              
+              <div className="space-y-3 mb-8">
+                {tier.features.map((feature, j) => (
+                  <div key={j} className="text-white/80">{feature}</div>
+                ))}
               </div>
-            ))}
-          </div>
+              
+              <button
+               onClick={() => window.location.href = tier.checkoutUrl}
+               className={`w-full py-3 rounded-lg font-bold transition-colors ${
+                tier.highlight
+                  ? 'bg-yellow-500 hover:bg-yellow-400 text-black'
+                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+              }`}>
+                Get Started
+              </button>
+            </div>
+          ))}
+        </div>
         </div>
       </div>
     </section>

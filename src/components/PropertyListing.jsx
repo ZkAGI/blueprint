@@ -426,6 +426,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { MapPin, TrendingUp, Home, Check, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 /** ---------- CONFIG: fallback hero when there are no listings ---------- */
 const FALLBACK_HERO = {
@@ -438,6 +439,42 @@ const FALLBACK_HERO = {
     "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop",
   buyUrl: "#",
   detailsUrl: "#",
+};
+
+const buildSlug = (title) =>
+  (title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    || "property";
+
+const findOriginalIndex = (listings, listing) => {
+  if (!Array.isArray(listings) || !listing) return -1;
+  return listings.findIndex(
+    (l) =>
+      l?.projectTitle === listing?.projectTitle &&
+      l?.location === listing?.location &&
+      String(l?.startingInvestment) === String(listing?.startingInvestment)
+  );
+};
+
+
+  const getRoiLabel = (roiRange) => {
+  if (!roiRange) return "—";
+  const m = String(roiRange).match(/^[^%]*%/);
+  return m ? m[0] : String(roiRange);
+};
+
+/** grab images from comma-separated galleryImages + mainImage fallback */
+const getImages = (listing) => {
+  const gallery = (listing?.galleryImages || "")
+    .split(",")
+    .map((u) => u.trim())
+    .filter(Boolean);
+  if (listing?.mainImage) gallery.push(listing.mainImage);
+  return gallery.length ? gallery : [
+    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop",
+  ];
 };
 
 /** ---------- GOOGLE DRIVE PROXY CONVERTER ---------- */
@@ -633,7 +670,7 @@ function HeroSection({ listing, isFallback }) {
     ? listing.galleryImages.split(",")[0]?.trim()
     : null;
   const rawCover = firstGallery || listing?.mainImage || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop";
-
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen">
       {/* Background Image */}
@@ -669,7 +706,7 @@ function HeroSection({ listing, isFallback }) {
               Aten Ventures Exclusive
             </div> */}
             
-            <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors">
+            <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors" onClick={() => navigate("listing")}>
               {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
             </button>
           </div>
@@ -944,9 +981,10 @@ function PropertyListingsSection({ listings, err }) {
 
         {listings.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {listings.slice(0, 6).map((l, i) => (
-              <PropertyCard key={`${l.projectTitle}-${i}`} listing={l} />
-            ))}
+           {listings.slice(0, 6).map((l, i) => (
+  <PropertyCard key={`${l.projectTitle}-${i}`} listing={l} listings={listings} index={i} />
+))}
+
           </div>
         ) : (
           <div className="text-center max-w-2xl mx-auto">
@@ -964,30 +1002,35 @@ function PropertyListingsSection({ listings, err }) {
   );
 }
 
-function PropertyCard({ listing }) {
+ function PropertyCard({ listing, listings }) {
   const [idx, setIdx] = useState(0);
-  
-  const images = []
-    .concat(
-      listing?.galleryImages
-        ? listing.galleryImages
-            .split(",")
-            .map((u) => u.trim())
-            .filter(Boolean)
-        : []
-    )
-    .concat(listing?.mainImage ? [listing.mainImage] : []);
-    
-  const shown = images.length ? images[idx % images.length] : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop";
+  const navigate = useNavigate();
+
+  const images = useMemo(() => getImages(listing), [listing]);
+  const shown = images[idx % images.length];
+
+  const handleNavigate = (action) => {
+    const originalIndex = findOriginalIndex(listings, listing);
+    const slug = buildSlug(listing?.projectTitle) + (originalIndex >= 0 ? "" : `-${Date.now()}`);
+    const idPart = originalIndex >= 0 ? originalIndex : 0;
+    const actionPart = action ? `&action=${action}` : "";
+    navigate(`/property/${slug}?id=${idPart}${actionPart}`);
+  };
 
   return (
     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-      <div className="relative h-64 overflow-hidden cursor-pointer" onClick={() => setIdx((p) => p + 1)}>
+      {/* Image */}
+      <div
+        className="relative h-64 overflow-hidden cursor-pointer"
+        onClick={() => setIdx((p) => p + 1)}
+        title="Click to view next image"
+      >
         <ProxyImage
-          src={shown}
-          alt={listing?.projectTitle}
-          className="w-full h-full object-cover"
-        />
+  key={shown}                 
+  src={shown}
+  alt={listing?.projectTitle}
+  className="w-full h-full object-cover"
+/>
         {images.length > 1 && (
           <div className="absolute top-3 right-3 bg-black/60 px-2 py-1 rounded text-xs">
             {(idx % images.length) + 1}/{images.length}
@@ -996,9 +1039,17 @@ function PropertyCard({ listing }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
       </div>
 
+      {/* Body */}
       <div className="p-6">
+        {/* Title + status */}
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold">{listing?.projectTitle}</h3>
+          <h3
+            onClick={() => handleNavigate()}
+            className="text-xl font-bold hover:text-yellow-400 transition-colors cursor-pointer"
+          >
+            {listing?.projectTitle}
+          </h3>
+
           {listing?.status && (
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -1014,20 +1065,18 @@ function PropertyCard({ listing }) {
           )}
         </div>
 
+        {/* Quick facts */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="text-center">
             <MapPin className="w-5 h-5 mx-auto mb-1 text-white/60" />
             <div className="text-sm text-white/80">{listing?.location || "—"}</div>
           </div>
-         <div className="text-center">
-  <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
-  <div className="text-sm text-white/80">
-    {listing?.roiRange
-      ? `${String(listing.roiRange).split("%")[0]}%`
-      : "—"}
-  </div>
-  <div className="text-xs text-white/60">ROI</div>
-</div>
+
+          <div className="text-center">
+            <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
+            <div className="text-sm text-white/80">{getRoiLabel(listing?.roiRange)}</div>
+            <div className="text-xs text-white/60">ROI</div>
+          </div>
 
           <div className="text-center">
             <Home className="w-5 h-5 mx-auto mb-1 text-white/60" />
@@ -1035,20 +1084,126 @@ function PropertyCard({ listing }) {
           </div>
         </div>
 
+        {/* Description */}
         {listing?.description && (
           <p className="text-white/70 text-sm mb-6 line-clamp-3">{listing.description}</p>
         )}
 
+        {/* Price */}
         <div className="mb-6">
           <div className="text-sm text-white/60 mb-1">From</div>
-          <div className="text-2xl font-bold">${listing?.startingInvestment}</div>
+          <div className="text-2xl font-bold">
+            {typeof listing?.startingInvestment === "number"
+              ? `$${listing.startingInvestment.toLocaleString()}`
+              : `$${(listing?.startingInvestment ?? "").toString()}`}
+          </div>
           <div className="text-sm text-white/60">Aten Ventures Exclusive</div>
         </div>
 
-        <button className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors">
-          BUY BLUEPRINT
-        </button>
+        {/* Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => handleNavigate()} // view
+            className="w-full text-center bg-white/10 hover:bg-white/20 text-white font-medium py-3 rounded-lg border border-white/20 transition-colors"
+          >
+            VIEW BLUEPRINT
+          </button>
+          <button
+            onClick={() => handleNavigate("buy")} // buy
+            className="w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors"
+          >
+            BUY BLUEPRINT
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+// function PropertyCard({ listing }) {
+//   const [idx, setIdx] = useState(0);
+  
+//   const images = []
+//     .concat(
+//       listing?.galleryImages
+//         ? listing.galleryImages
+//             .split(",")
+//             .map((u) => u.trim())
+//             .filter(Boolean)
+//         : []
+//     )
+//     .concat(listing?.mainImage ? [listing.mainImage] : []);
+    
+//   const shown = images.length ? images[idx % images.length] : "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=800&auto=format&fit=crop";
+
+//   return (
+//     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
+//       <div className="relative h-64 overflow-hidden cursor-pointer" onClick={() => setIdx((p) => p + 1)}>
+//         <ProxyImage
+//           src={shown}
+//           alt={listing?.projectTitle}
+//           className="w-full h-full object-cover"
+//         />
+//         {images.length > 1 && (
+//           <div className="absolute top-3 right-3 bg-black/60 px-2 py-1 rounded text-xs">
+//             {(idx % images.length) + 1}/{images.length}
+//           </div>
+//         )}
+//         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+//       </div>
+
+//       <div className="p-6">
+//         <div className="flex items-center justify-between mb-4">
+//           <h3 className="text-xl font-bold">{listing?.projectTitle}</h3>
+//           {listing?.status && (
+//             <span
+//               className={`px-3 py-1 rounded-full text-xs font-medium ${
+//                 listing.status === "Available"
+//                   ? "bg-green-500/20 text-green-400"
+//                   : listing.status === "Coming Soon"
+//                   ? "bg-yellow-500/20 text-yellow-400"
+//                   : "bg-red-500/20 text-red-400"
+//               }`}
+//             >
+//               {listing.status}
+//             </span>
+//           )}
+//         </div>
+
+//         <div className="grid grid-cols-3 gap-4 mb-6">
+//           <div className="text-center">
+//             <MapPin className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//             <div className="text-sm text-white/80">{listing?.location || "—"}</div>
+//           </div>
+//          <div className="text-center">
+//   <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//   <div className="text-sm text-white/80">
+//     {listing?.roiRange
+//       ? `${String(listing.roiRange).split("%")[0]}%`
+//       : "—"}
+//   </div>
+//   <div className="text-xs text-white/60">ROI</div>
+// </div>
+
+//           <div className="text-center">
+//             <Home className="w-5 h-5 mx-auto mb-1 text-white/60" />
+//             <div className="text-sm text-white/80">{listing?.propertyType || "—"}</div>
+//           </div>
+//         </div>
+
+//         {listing?.description && (
+//           <p className="text-white/70 text-sm mb-6 line-clamp-3">{listing.description}</p>
+//         )}
+
+//         <div className="mb-6">
+//           <div className="text-sm text-white/60 mb-1">From</div>
+//           <div className="text-2xl font-bold">${listing?.startingInvestment}</div>
+//           <div className="text-sm text-white/60">Aten Ventures Exclusive</div>
+//         </div>
+
+//         <button className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors">
+//           BUY BLUEPRINT
+//         </button>
+//       </div>
+//     </div>
+//   );
+// }
