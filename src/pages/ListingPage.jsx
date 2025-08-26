@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { MapPin, TrendingUp, Home, Check, ArrowRight } from "lucide-react";
+import { MapPin, TrendingUp, Home, Check, ArrowRight, ChevronDown } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 /** ---------- GOOGLE DRIVE PROXY CONVERTER ---------- */
@@ -353,6 +353,8 @@ export default function ListingsPage() {
     maxROI: ""
   });
 
+  const [filtersOpen, setFiltersOpen] = useState(false); // collapsed on mobile by default
+
   // Fetch listings
   useEffect(() => {
     (async () => {
@@ -479,90 +481,122 @@ export default function ListingsPage() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar - Filters */}
-          <div className="lg:w-80 space-y-6">
-            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold">Filters</h3>
-                <button 
-                  onClick={clearFilters}
-                  className="text-yellow-500 hover:text-yellow-400 text-sm"
-                >
-                  Clear All
-                </button>
-              </div>
+         {/* Left Sidebar - Filters */}
+<div className="lg:w-80 space-y-6">
+  <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+    <div className="flex items-center justify-between mb-6">
+      <h3 className="text-xl font-bold">Filters</h3>
 
-              <div className="space-y-4">
-                {/* Location Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Location</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Phuket, Bali..."
-                    value={filters.location}
-                    onChange={(e) => handleFilterChange("location", e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
-                  />
-                </div>
+      <div className="flex items-center gap-3">
+        {/* Clear button (always visible) */}
+       <button
+    onClick={clearFilters}
+    className="hidden md:inline-block text-yellow-500 hover:text-yellow-400 text-sm"
+  >
+    Clear
+  </button>
 
-                {/* Property Type Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Property Type</label>
-                  <select
-                    value={filters.propertyType}
-                    onChange={(e) => handleFilterChange("propertyType", e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
-                  >
-                    <option value="">All Types</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Resort">Resort</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="Hotel">Hotel</option>
-                  </select>
-                </div>
+        {/* Mobile-only toggle */}
+        <button
+          type="button"
+          className="md:hidden inline-flex items-center gap-1 text-xs text-white/80 bg-white/10 hover:bg-white/15 border border-white/20 rounded-md px-2.5 py-1.5"
+          onClick={() => setFiltersOpen((p) => !p)}
+          aria-expanded={filtersOpen}
+          aria-controls="filters-body"
+        >
+          {filtersOpen ? "Hide" : "Show"}
+          <ChevronDown
+            className={`w-4 h-4 transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+      </div>
+    </div>
 
-                {/* Status Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Status</label>
-                  <select
-                    value={filters.status}
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
-                  >
-                    <option value="">All Status</option>
-                    <option value="Available">Available</option>
-                    <option value="Coming Soon">Coming Soon</option>
-                    <option value="Sold Out">Sold Out</option>
-                  </select>
-                </div>
+    {/* Body: hidden on mobile when collapsed, always shown on md+ */}
+    <div
+      id="filters-body"
+      className={`${filtersOpen ? "block" : "hidden"} md:block space-y-4`}
+    >
+        <div className="md:hidden flex justify-end -mt-2 mb-2">
+    <button
+      onClick={clearFilters}
+      className="text-yellow-500 hover:text-yellow-400 text-sm"
+    >
+      Clear Filter
+    </button>
+  </div>
+      {/* Location Filter */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Location</label>
+        <input
+          type="text"
+          placeholder="e.g. Phuket, Bali..."
+          value={filters.location}
+          onChange={(e) => handleFilterChange("location", e.target.value)}
+          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
+        />
+      </div>
 
-                {/* Investment Range */}
-                <div>
-                  <label className="block text-sm font-medium mb-2">Investment Range ($)</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={filters.minInvestment}
-                      onChange={(e) => handleFilterChange("minInvestment", e.target.value)}
-                      className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={filters.maxInvestment}
-                      onChange={(e) => handleFilterChange("maxInvestment", e.target.value)}
-                      className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Property Type Filter */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Property Type</label>
+        <select
+          value={filters.propertyType}
+          onChange={(e) => handleFilterChange("propertyType", e.target.value)}
+          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+        >
+          <option value="">All Types</option>
+          <option value="Villa">Villa</option>
+          <option value="Resort">Resort</option>
+          <option value="Apartment">Apartment</option>
+          <option value="Hotel">Hotel</option>
+        </select>
+      </div>
 
-            {/* Results Count */}
-            <div className="text-white/70 text-sm">
-              Showing {filteredListings.length} of {listings.length} properties
-            </div>
-          </div>
+      {/* Status Filter */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Status</label>
+        <select
+          value={filters.status}
+          onChange={(e) => handleFilterChange("status", e.target.value)}
+          className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white"
+        >
+          <option value="">All Status</option>
+          <option value="Available">Available</option>
+          <option value="Coming Soon">Coming Soon</option>
+          <option value="Sold Out">Sold Out</option>
+        </select>
+      </div>
+
+      {/* Investment Range */}
+      <div>
+        <label className="block text-sm font-medium mb-2">Investment Range ($)</label>
+        <div className="grid grid-cols-2 gap-2">
+          <input
+            type="number"
+            placeholder="Min"
+            value={filters.minInvestment}
+            onChange={(e) => handleFilterChange("minInvestment", e.target.value)}
+            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
+          />
+          <input
+            type="number"
+            placeholder="Max"
+            value={filters.maxInvestment}
+            onChange={(e) => handleFilterChange("maxInvestment", e.target.value)}
+            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-white/50"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Results Count */}
+  <div className="hidden md:block text-white/70 text-sm">
+    Showing {filteredListings.length} of {listings.length} properties
+  </div>
+</div>
+
 
           {/* Main Content */}
           <div className="flex-1">

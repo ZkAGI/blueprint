@@ -22,7 +22,7 @@ export default function ExecutiveSnapshot({ property }) {
     },
     {
       icon: <TrendingUp className="w-8 h-8" />,
-      label: "Target Returns",
+      label: "Projected Returns",
       value: property?.roiRange,
       subValue: "Annual Yield"
     },
@@ -34,9 +34,9 @@ export default function ExecutiveSnapshot({ property }) {
     },
     {
       icon: <Shield className="w-8 h-8" />,
-      label: "Management",
+      label: "Management (For passive income generation)",
       value: "Aten Ventures",
-      subValue: `${property?.managementFee || 2}% Fee`
+      subValue: `${property?.managementFee || 2}% rev share`
     }
   ];
 
@@ -64,13 +64,13 @@ export default function ExecutiveSnapshot({ property }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {snapshots.map((item, index) => {
   // Special case for ROI
-  if (item.label === "Target Returns") {
+  if (item.label === "Projected Returns") {
     const { main, rest } = formatRoi(item.value);
     return (
       <div key={index} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
         <div className="text-yellow-500 mb-4">{item.icon}</div>
         <h3 className="text-lg font-semibold mb-2 text-white/90">{item.label}</h3>
-        <div className="text-2xl font-bold mb-1">{main}</div>
+        <div className="text-2xl font-bold mb-1 text-green-500">{main}</div>
         {rest && <div className="text-xs italic text-white/60">{rest}</div>}
         <div className="text-sm text-white/60">{item.subValue}</div>
       </div>

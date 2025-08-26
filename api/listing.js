@@ -40,6 +40,7 @@ export default async function handler(req, res) {
         propertyType: listing['Property Type'] || '',
         roiRange: listing['ROI Range'] || '',
         startingInvestment: listing['Starting Investment'] || '',
+        maxInvestment: listing['Max Investment'] || '',
         description: listing['Description'] || '',
         mainImage: listing['Main Image URL'] || '',
         galleryImages: listing['Gallery Images'] || '',

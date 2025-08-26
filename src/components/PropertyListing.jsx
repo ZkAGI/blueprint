@@ -664,70 +664,72 @@ export default function PropertyLanding() {
   );
 }
 
-
+/** ---------- HERO (paste-in replacement) ---------- */
 function HeroSection({ listing, isFallback }) {
-  const firstGallery = listing?.galleryImages
-    ? listing.galleryImages.split(",")[0]?.trim()
-    : null;
-  const rawCover = firstGallery || listing?.mainImage || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop";
   const navigate = useNavigate();
+
   return (
-    <section className="relative min-h-screen">
-      {/* Background Image */}
+    <section className="relative min-h-[100svh]">
+      {/* Background: keep the SAME image as your current hero */}
       <div className="absolute inset-0">
         <img
           src="/hero.png"
           alt={listing?.projectTitle || "Hero Background"}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/55" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col">
-        {/* Main Hero Content */}
-        <div className="flex-1 flex items-center">
+      <div className="relative z-10 container mx-auto px-4 min-h-[100svh] flex flex-col">
+        {/* Main text */}
+        <div className="flex-1 flex items-center pt-14 sm:pt-20">
           <div className="max-w-3xl">
-            <div className="text-sm uppercase tracking-widest text-white/70 mb-4">
+            <div className="text-xs sm:text-sm uppercase tracking-widest text-white/70 mb-3">
               Aten Ventures Exclusive
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-              ECO-LUXURY<br />
-              BLUEPRINT<br />
-              <span className="text-yellow-500 text-xl md:text-3xl">Own a share of eco-luxury, earn passive ROI</span>
+
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-4">
+              ECO-LUXURY
+              <br />
+              BLUEPRINT
+              <br />
+              <span className="text-yellow-500 text-lg md:text-2xl">
+                Own a share of eco-luxury, earn passive ROI
+              </span>
             </h1>
-            <div className="text-xl text-white/90 mb-8 w-3/4">
-         Step into eco-luxury ownership with accessible blueprints. 
-  Earn passive ROI through global rental syndicates and gain exclusive access 
-  to sustainable, high-value properties. Whether you rent them out or enjoy them yourself, 
-  each blueprint makes your asset work for you.
+
+            <div className="text-base md:text-xl text-white/90 mb-6 md:mb-8 max-w-[90vw] md:max-w-[48rem]">
+              Step into eco-luxury ownership with accessible blueprints. Earn passive ROI through
+              global rental syndicates and gain exclusive access to sustainable, high-value
+              properties. Rent them out or enjoy them yourself—each blueprint makes your asset work
+              for you.
             </div>
-            {/* <div className="text-lg text-white/80 mb-8">
-              Aten Ventures Exclusive
-            </div> */}
-            
-            <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors" onClick={() => navigate("listing")}>
+
+            <button
+              className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg transition-colors"
+              onClick={() => navigate("listing")}
+            >
               {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
             </button>
           </div>
         </div>
 
-        {/* Bottom Info Cards */}
-        <div className="pb-12 w-1/2">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-xl">
-            <InfoCard 
-              icon={<MapPin className="w-6 h-6" />}
+        {/* Bottom Info Cards (always 3 in one row on mobile) */}
+        <div className="pb-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full max-w-md sm:max-w-xl">
+            <InfoCard
+              icon={<MapPin className="w-4 h-4 sm:w-5 sm:h-5" />}
               title={listing?.location || "Bang Tao, Phuket"}
               subtitle="Location"
             />
-           <InfoCard
-  icon={<TrendingUp className="w-6 h-6" />}
-  title={`${String(listing?.roiRange || "12–18%").split("%")[0]}%`}
-  subtitle="Modeled ROI"
-/>
-
-            <InfoCard 
-              icon={<Home className="w-6 h-6" />}
+            <InfoCard
+              icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />}
+              title={getRoiLabel(listing?.roiRange)}
+              subtitle="Modeled ROI"
+            />
+            <InfoCard
+              icon={<Home className="w-4 h-4 sm:w-5 sm:h-5" />}
               title={listing?.propertyType || "2BR Pool Villa"}
               subtitle="Property Type"
             />
@@ -738,15 +740,104 @@ function HeroSection({ listing, isFallback }) {
   );
 }
 
+/** ---------- INFO CARD (paste-in replacement) ---------- */
 function InfoCard({ icon, title, subtitle }) {
   return (
-    <div className="bg-black/60 backdrop-blur border border-white/20 rounded-xl p-4 text-center">
-      <div className="text-white/60 mb-2 flex justify-center">{icon}</div>
-      <div className="text-xl font-bold text-white mb-1">{title}</div>
-      <div className="text-white/60 text-sm uppercase tracking-wide">{subtitle}</div>
+    <div className="bg-black/60 backdrop-blur border border-white/20 rounded-lg sm:rounded-xl p-2.5 sm:p-4 text-center">
+      <div className="text-white/60 mb-1 sm:mb-2 flex justify-center">{icon}</div>
+      <div className="text-[11px] sm:text-base font-semibold text-white leading-tight mb-0.5 sm:mb-1 truncate">
+        {title}
+      </div>
+      <div className="text-[9px] sm:text-xs text-white/60 uppercase tracking-wide">
+        {subtitle}
+      </div>
     </div>
   );
 }
+
+
+// function HeroSection({ listing, isFallback }) {
+//   const firstGallery = listing?.galleryImages
+//     ? listing.galleryImages.split(",")[0]?.trim()
+//     : null;
+//   const rawCover = firstGallery || listing?.mainImage || "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1600&auto=format&fit=crop";
+//   const navigate = useNavigate();
+//   return (
+//     <section className="relative min-h-screen">
+//       {/* Background Image */}
+//       <div className="absolute inset-0">
+//         <img
+//           src="/hero.png"
+//           alt={listing?.projectTitle || "Hero Background"}
+//           className="w-full h-full object-cover"
+//         />
+//         <div className="absolute inset-0 bg-black/50" />
+//       </div>
+
+//       {/* Content */}
+//       <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col">
+//         {/* Main Hero Content */}
+//         <div className="flex-1 flex items-center">
+//           <div className="max-w-3xl">
+//             <div className="text-sm uppercase tracking-widest text-white/70 mb-4">
+//               Aten Ventures Exclusive
+//             </div>
+//             <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
+//               ECO-LUXURY<br />
+//               BLUEPRINT<br />
+//               <span className="text-yellow-500 text-xl md:text-3xl">Own a share of eco-luxury, earn passive ROI</span>
+//             </h1>
+//             <div className="text-xl text-white/90 mb-8 w-3/4">
+//          Step into eco-luxury ownership with accessible blueprints. 
+//   Earn passive ROI through global rental syndicates and gain exclusive access 
+//   to sustainable, high-value properties. Whether you rent them out or enjoy them yourself, 
+//   each blueprint makes your asset work for you.
+//             </div>
+//             {/* <div className="text-lg text-white/80 mb-8">
+//               Aten Ventures Exclusive
+//             </div> */}
+            
+//             <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors" onClick={() => navigate("listing")}>
+//               {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
+//             </button>
+//           </div>
+//         </div>
+
+//         {/* Bottom Info Cards */}
+//         <div className="pb-12 w-1/2">
+//           <div className="grid  grid-cols-3 gap-3 md:gap-6 max-w-xl">
+//             <InfoCard 
+//               icon={<MapPin className="w-6 h-6" />}
+//               title={listing?.location || "Bang Tao, Phuket"}
+//               subtitle="Location"
+//             />
+//            <InfoCard
+//   icon={<TrendingUp className="w-6 h-6" />}
+//   title={`${String(listing?.roiRange || "12–18%").split("%")[0]}%`}
+//   subtitle="Modeled ROI"
+// />
+
+//             <InfoCard 
+//               icon={<Home className="w-6 h-6" />}
+//               title={listing?.propertyType || "2BR Pool Villa"}
+//               subtitle="Property Type"
+//             />
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function InfoCard({ icon, title, subtitle }) {
+//   return (
+//     <div className="bg-black/60 backdrop-blur border border-white/20 rounded-xl p-4 text-center">
+//       <div className="text-white/60 mb-2 flex justify-center">{icon}</div>
+//       <div className="text-xl font-bold text-white mb-1">{title}</div>
+//       <div className="text-white/60 text-sm uppercase tracking-wide">{subtitle}</div>
+//     </div>
+//   );
+// }
 
 function HighlightsSection() {
   return (

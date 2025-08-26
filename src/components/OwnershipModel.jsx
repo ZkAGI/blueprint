@@ -63,8 +63,8 @@ export default function OwnershipModel({ property }) {
                   <div className="text-white/70">{ownershipStructure.paymentTerms}</div>
                 </div>
                 <div>
-                  <div className="font-medium">Management Fee</div>
-                  <div className="text-white/70">{ownershipStructure.managementFee}% annually</div>
+                  <div className="font-medium">Management Fee <span className="text-[10px] italic text-gray-300">(For passive income generation)</span></div>
+                  <div className="text-white/70">{ownershipStructure.managementFee}% rev share</div>
                 </div>
               </div>
             </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Share2, Heart } from "lucide-react";
 
-// Import all your existing section components
 import PropertyHero from "../components/PropertyHero";
 import ExecutiveSnapshot from "../components/ExecutiveSnapshot";
 import VisualShowcase from "../components/VisualShowcase";
@@ -14,30 +13,31 @@ import ExitLiquidity from "../components/ExitLiquidity";
 import RiskFactors from "../components/RiskFactors";
 import ClosingCTA from "../components/ClosingCTA";
 
-// Header component for the property page
+/** ---------- HEADER ---------- */
 function PropertyHeader({ property, onBack }) {
-  console.log('propert',property)
   return (
-    <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-sm border-b border-white/10">
+      {/* ⬇️ Narrow on mobile, wide again on lg+ */}
+      <div className="mx-auto w-full max-w-3xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] px-4 lg:px-6 xl:px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={onBack}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            aria-label="Back"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h1 className="text-xl font-bold">{property?.projectTitle}</h1>
-            <p className="text-sm text-white/60">{property?.location}</p>
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold truncate">{property?.projectTitle}</h1>
+            <p className="text-sm text-white/60 truncate">{property?.location}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" aria-label="Favorite">
             <Heart className="w-5 h-5" />
           </button>
-          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" aria-label="Share">
             <Share2 className="w-5 h-5" />
           </button>
         </div>
@@ -46,19 +46,17 @@ function PropertyHeader({ property, onBack }) {
   );
 }
 
-// Main Property Detail Page Component
+/** ---------- PAGE ---------- */
 export default function PropertyDetailPage() {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // React Router hooks - FIXED routing approach
-  const { slug } = useParams(); // Get slug from URL path
-  const [searchParams] = useSearchParams(); // Get query parameters  
-  const navigate = useNavigate(); // For navigation
+  const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  // Get property ID from query params - this is the correct approach
-  const propertyId = searchParams.get('id');
+  const propertyId = searchParams.get("id");
 
   useEffect(() => {
     if (propertyId !== null) {
@@ -69,29 +67,19 @@ export default function PropertyDetailPage() {
     }
   }, [propertyId]);
 
-  const fetchPropertyDetails = async (propertyId) => {
+  const fetchPropertyDetails = async (id) => {
     try {
-      // Use your existing API endpoint that returns all listings
       const response = await fetch("https://zynapse.zkagi.ai/listings", {
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": "zk-123321",
-        },
+        headers: { "Content-Type": "application/json", "api-key": "zk-123321" },
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
+
       const allListings = await response.json();
-      
-      // Find the property by index (propertyId is the index)
-      const foundProperty = Array.isArray(allListings) 
-        ? allListings[parseInt(propertyId)]
+      const foundProperty = Array.isArray(allListings)
+        ? allListings[parseInt(id, 10)]
         : null;
-        
-      if (!foundProperty) {
-        throw new Error(`Property not found at index ${propertyId}`);
-      }
-      
+
+      if (!foundProperty) throw new Error(`Property not found at index ${id}`);
       setProperty(foundProperty);
     } catch (err) {
       setError(err.message || "Failed to fetch property details");
@@ -100,28 +88,11 @@ export default function PropertyDetailPage() {
     }
   };
 
-  const handleBack = () => {
-    navigate(-1); // Go back to previous page using React Router
-  };
-
-  const handleShare = () => {
-    // Share current URL
-    if (navigator.share) {
-      navigator.share({
-        title: property?.projectTitle,
-        text: property?.description,
-        url: window.location.href,
-      });
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      alert('Property link copied to clipboard!');
-    }
-  };
+  const handleBack = () => navigate(-1);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center overflow-x-hidden">
         <div className="text-white/80 text-xl">Loading property details...</div>
       </div>
     );
@@ -129,19 +100,19 @@ export default function PropertyDetailPage() {
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center overflow-x-hidden">
+        <div className="text-center px-6">
           <h2 className="text-2xl font-bold text-red-400 mb-4">Property Not Found</h2>
           <p className="text-white/70 mb-6">{error || "The requested property could not be found."}</p>
           <div className="flex gap-4 justify-center">
-            <button 
+            <button
               onClick={handleBack}
               className="bg-gray-600 hover:bg-gray-500 text-white font-medium px-6 py-3 rounded-lg transition-colors"
             >
               Go Back
             </button>
-            <button 
-              onClick={() => navigate('/ecoluxury/listings')}
+            <button
+              onClick={() => navigate("/ecoluxury/listings")}
               className="bg-yellow-500 hover:bg-yellow-400 text-black font-medium px-6 py-3 rounded-lg transition-colors"
             >
               View All Properties
@@ -153,37 +124,53 @@ export default function PropertyDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="w-full min-h-screen bg-black text-white overflow-x-hidden">
       <PropertyHeader property={property} onBack={handleBack} />
-      
-      <main className="pb-20">
-        {/* 1. Hero Section */}
-        <PropertyHero property={property} />
-        
-        {/* 2. Executive Snapshot */}
-        <ExecutiveSnapshot property={property} />
-        
-        {/* 3. Visual Showcase */}
-        <VisualShowcase property={property} />
-        
-        {/* 4. Market Context */}
-        <MarketContext property={property} />
-        
-        {/* 5. Financials */}
-        <Financials property={property} />
-        
-        {/* 6. Ownership Model */}
-        <OwnershipModel property={property} />
-        
 
-        
-        {/* 8. Exit & Liquidity */}
-        <ExitLiquidity property={property} />
-        
-        {/* 9. Risk Factors */}
-        <RiskFactors property={property} />
-        
-       
+      {/* Page container: mobile clamp; desktop wide */}
+      <main className="w-full pb-20">
+        <div className="mx-auto w-full max-w-3xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] px-4 lg:px-6 xl:px-8">
+          {/* Each section kept safe; wide components can breathe on lg+ */}
+          <section className="w-full overflow-x-hidden">
+            <PropertyHero property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <ExecutiveSnapshot property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <VisualShowcase property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <MarketContext property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <Financials property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <OwnershipModel property={property} />
+          </section>
+
+          {/* <section className="w-full overflow-x-hidden">
+            <ManagementFees property={property} />
+          </section> */}
+
+          <section className="w-full overflow-x-hidden">
+            <ExitLiquidity property={property} />
+          </section>
+
+          <section className="w-full overflow-x-hidden">
+            <RiskFactors property={property} />
+          </section>
+
+          {/* <section className="w-full overflow-x-hidden">
+            <ClosingCTA property={property} />
+          </section> */}
+        </div>
       </main>
     </div>
   );
