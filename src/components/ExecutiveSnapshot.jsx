@@ -40,6 +40,17 @@ export default function ExecutiveSnapshot({ property }) {
     }
   ];
 
+  const formatRoi = (roi?: string) => {
+  if (!roi) return { main: "—", rest: "" };
+  const i = roi.indexOf("%");
+  if (i < 0) return { main: roi, rest: "" };
+
+  return {
+    main: roi.slice(0, i + 1).trim(),     // till %
+    rest: roi.slice(i + 1).trim(),        // after %
+  };
+};
+
   return (
     <section className="py-20 bg-gradient-to-b from-black to-gray-900">
       <div className="container mx-auto px-4">
@@ -51,14 +62,32 @@ export default function ExecutiveSnapshot({ property }) {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {snapshots.map((item, index) => (
-            <div key={index} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
-              <div className="text-yellow-500 mb-4">{item.icon}</div>
-              <h3 className="text-lg font-semibold mb-2 text-white/90">{item.label}</h3>
-              <div className="text-2xl font-bold mb-1">{item.value}</div>
-              <div className="text-sm text-white/60">{item.subValue}</div>
-            </div>
-          ))}
+          {snapshots.map((item, index) => {
+  // Special case for ROI
+  if (item.label === "Target Returns") {
+    const { main, rest } = formatRoi(item.value);
+    return (
+      <div key={index} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
+        <div className="text-yellow-500 mb-4">{item.icon}</div>
+        <h3 className="text-lg font-semibold mb-2 text-white/90">{item.label}</h3>
+        <div className="text-2xl font-bold mb-1">{main}</div>
+        {rest && <div className="text-xs italic text-white/60">{rest}</div>}
+        <div className="text-sm text-white/60">{item.subValue}</div>
+      </div>
+    );
+  }
+
+  // Default render
+  return (
+    <div key={index} className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all">
+      <div className="text-yellow-500 mb-4">{item.icon}</div>
+      <h3 className="text-lg font-semibold mb-2 text-white/90">{item.label}</h3>
+      <div className="text-2xl font-bold mb-1">{item.value}</div>
+      <div className="text-sm text-white/60">{item.subValue}</div>
+    </div>
+  );
+})}
+
         </div>
 
         {/* Google Map Embed */}

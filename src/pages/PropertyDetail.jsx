@@ -183,8 +183,7 @@ export default function PropertyDetailPage() {
         {/* 9. Risk Factors */}
         <RiskFactors property={property} />
         
-        {/* 10. Closing CTA */}
-        <ClosingCTA property={property} />
+       
       </main>
     </div>
   );

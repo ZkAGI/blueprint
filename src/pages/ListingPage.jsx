@@ -163,7 +163,7 @@ function PropertyCard({ listing, index, listings }) {
 
   return (
     <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10 hover:border-white/30 transition-all">
-      <div className="relative h-64 overflow-hidden cursor-pointer" onClick={() => setIdx((p) => p + 1)}>
+      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={() => setIdx((p) => p + 1)}>
         <ProxyImage
           src={shown}
           alt={listing?.projectTitle}
@@ -207,7 +207,10 @@ function PropertyCard({ listing, index, listings }) {
           </div>
           <div className="text-center">
             <TrendingUp className="w-5 h-5 mx-auto mb-1 text-white/60" />
-            <div className="text-sm text-white/80">{listing?.roiRange || "—"}</div>
+          <div className="text-sm text-white/80">
+  {(listing?.roiRange && (listing.roiRange.match(/^[^%]*%/)?.[0] ?? listing.roiRange)) || "—"}
+</div>
+
             <div className="text-xs text-white/60">ROI</div>
           </div>
           <div className="text-center">
