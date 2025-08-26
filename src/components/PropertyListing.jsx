@@ -657,6 +657,17 @@ export default function PropertyLanding() {
             <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://surajvenkat.medium.com/" target="_blank" rel="noopener noreferrer">Medium</a>
             <a className="block rounded-lg border-cyan-400/30 px-3 py-3 text-center text-sm text-gray-200 hover:bg-cyan-400/10 hover:text-cyan-200 transition" href="https://youtube.com/@decodingventure?feature=shared" target="_blank" rel="noopener noreferrer">YouTube</a>
           </div>
+          <div className="mt-3 flex justify-center">
+      <a
+        href="https://docs.google.com/document/d/1uNbkhAWfjIXzXFJF5a-aOuoMXkCqguK1jgeQFmY1sPc/edit?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 r underline text-white px-4 py-2 text-sm transition-colors"
+      >
+        Terms & Conditions
+     
+      </a>
+    </div>
         </div>
       </footer>
     
