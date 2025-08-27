@@ -36,7 +36,7 @@ export default function OwnershipModel({ property }) {
   ];
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-[#091020]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Ownership Model</h2>
@@ -99,11 +99,11 @@ export default function OwnershipModel({ property }) {
           {tiers.map((tier, i) => (
             <div key={i} className={`relative rounded-2xl p-8 text-center border-2 ${
               tier.highlight 
-                ? 'border-yellow-500 bg-yellow-500/10' 
+                ? 'border-[#af89fb] bg-yellow-500/10' 
                 : 'border-white/20 bg-white/5'
             }`}>
               {tier.highlight && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-sm font-bold">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#af89fb] text-black px-4 py-1 rounded-full text-sm font-bold">
                   POPULAR
                 </div>
               )}
@@ -121,7 +121,7 @@ export default function OwnershipModel({ property }) {
                onClick={() => window.location.href = tier.checkoutUrl}
                className={`w-full py-3 rounded-lg font-bold transition-colors ${
                 tier.highlight
-                  ? 'bg-yellow-500 hover:bg-yellow-400 text-black'
+                  ? 'bg-[#af89fb] hover:bg-[#af89fb]/20 text-white'
                   : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
               }`}>
                 Get Started

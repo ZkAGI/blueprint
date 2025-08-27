@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import ProxyImage from "./ProxyImage";
 
 // 1. PROPERTY HERO SECTION
-export default function PropertyHero({ property }) {
+export default function PropertyHero({ property, onViewDetails }) {
   const [imageError, setImageError] = useState(false);
   
   const heroImage = property?.coverImage || property?.mainImage || 
@@ -20,7 +20,7 @@ export default function PropertyHero({ property }) {
   className="w-full h-full object-cover"
 />
 
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-[#091020]" />
       </div>
       
       {/* Content */}
@@ -38,11 +38,11 @@ export default function PropertyHero({ property }) {
           <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
             {property?.propertyType}
           </span>
-          <span className="bg-yellow-500/20 backdrop-blur-sm px-4 py-2 rounded-full text-yellow-400">
+          <span className="bg-[#af89fb]/20 backdrop-blur-sm px-4 py-2 rounded-full text-[#af89fb]">
             From ${property?.startingInvestment?.toLocaleString()}
           </span>
         </div>
-        <button className="bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-8 py-4 rounded-lg text-lg transition-colors">
+        <button  onClick={onViewDetails} className="bg-[#af89fb] hover:bg-[#af89fb]/20 text-white font-bold px-8 py-4 rounded-lg text-lg transition-colors">
           View Investment Details
         </button>
       </div>

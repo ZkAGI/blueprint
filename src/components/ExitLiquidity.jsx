@@ -99,7 +99,7 @@ export default function ExitLiquidity({ property = {} }) {
   ].filter(Boolean);
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-[#091020]">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10">

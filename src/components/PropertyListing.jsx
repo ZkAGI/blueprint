@@ -628,7 +628,7 @@ export default function PropertyLanding() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#091020] text-white">
       {/* Header */}
 
       
@@ -705,7 +705,7 @@ function HeroSection({ listing, isFallback }) {
               <br />
               BLUEPRINT
               <br />
-              <span className="text-yellow-500 text-lg md:text-2xl">
+              <span className="text-[#af89fb] text-lg md:text-2xl">
                 Own a share of eco-luxury, earn passive ROI
               </span>
             </h1>
@@ -717,12 +717,20 @@ function HeroSection({ listing, isFallback }) {
               for you.
             </div>
 
-            <button
-              className="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-lg text-base sm:text-lg transition-colors"
-              onClick={() => navigate("listing")}
-            >
-              {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
-            </button>
+           <button
+  className="w-full sm:w-auto 
+             bg-gradient-to-r from-blue-400 via-purple-400 to-blue-500 
+             hover:opacity-90 
+             text-white font-bold 
+             px-6 py-3 sm:px-8 sm:py-4 
+             rounded-lg 
+             text-base sm:text-lg 
+             transition-colors"
+  onClick={() => navigate("listing")}
+>
+  {isFallback ? "JOIN WAITLIST" : "BUY BLUEPRINT"}
+</button>
+
           </div>
         </div>
 
@@ -921,7 +929,7 @@ function InvestmentPathwaySection() {
   ];
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-[#091020]">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-16">Investment Pathway</h2>
         
@@ -937,9 +945,14 @@ function InvestmentPathwaySection() {
                 )}
                 
                 {/* Step Circle */}
-                <div className="relative z-10 w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-xl mx-auto mb-4">
-                  {step.number}
-                </div>
+                {/* Step Circle */}
+<div className="relative z-10 w-16 h-16 
+                bg-gradient-to-br from-blue-400 via-purple-400 to-blue-500
+                rounded-full flex items-center justify-center 
+                text-white font-bold text-xl mx-auto mb-4">
+  {step.number}
+</div>
+
                 
                 <h3 className="text-xl font-bold mb-2">{step.title}</h3>
                 <p className="text-white/70">{step.desc}</p>
@@ -989,11 +1002,11 @@ function PriceCardsSection() {
           {tiers.map((tier, i) => (
             <div key={i} className={`relative rounded-2xl p-8 text-center border-2 ${
               tier.highlight 
-                ? 'border-yellow-500 bg-yellow-500/10' 
+                ? 'border-[#af89fb] bg-yellow-500/10' 
                 : 'border-white/20 bg-white/5'
             }`}>
               {tier.highlight && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black px-4 py-1 rounded-full text-sm font-bold">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#af89fb] text-black px-4 py-1 rounded-full text-sm font-bold">
                   POPULAR
                 </div>
               )}
@@ -1011,7 +1024,7 @@ function PriceCardsSection() {
                onClick={() => window.location.href = tier.checkoutUrl}
                className={`w-full py-3 rounded-lg font-bold transition-colors ${
                 tier.highlight
-                  ? 'bg-yellow-500 hover:bg-yellow-400 text-black'
+                  ? 'bg-[#af89fb] hover:bg-[#af89fb]/20 text-black'
                   : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
               }`}>
                 Get Started
@@ -1061,7 +1074,7 @@ function PriceCardsSection() {
 
 function PropertyListingsSection({ listings, err }) {
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-[#091020]">
       <div className="container mx-auto px-4">
         {err && (
           <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 p-3 text-red-200">
@@ -1074,7 +1087,7 @@ function PropertyListingsSection({ listings, err }) {
           <h2 className="text-4xl font-bold">Explore Blueprints</h2>
           <a 
             href="/ecoluxury/listing" 
-            className="flex items-center gap-2 text-yellow-500 hover:text-yellow-400 transition-colors group"
+            className="flex items-center gap-2 text-[#af89fb] hover:text-[#af89fb]/20 transition-colors group"
           >
             <span className="text-lg font-medium">View more listings</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -1212,7 +1225,7 @@ function PropertyListingsSection({ listings, err }) {
           </button>
           <button
             onClick={() => handleNavigate("buy")} // buy
-            className="w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors"
+            className="w-full text-center bg-[#af89fb] hover:bg-[#af89fb]/20 text-black font-medium py-3 rounded-lg transition-colors"
           >
             BUY BLUEPRINT
           </button>

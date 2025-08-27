@@ -225,7 +225,7 @@ function PropertyCard({ listing, index, listings }) {
 
         <button
           onClick={handleViewProperty}
-          className="block w-full text-center bg-yellow-600 hover:bg-yellow-500 text-black font-medium py-3 rounded-lg transition-colors"
+          className="block w-full text-center bg-[#9e8ffb] hover:bg-[#be84fb] text-black font-medium py-3 rounded-lg transition-colors"
         >
           VIEW BLUEPRINT
         </button>
@@ -360,7 +360,7 @@ export default function ListingsPage() {
 
   return (
     // Root: flex column so footer can sit at the bottom
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-[#0a1021] text-white flex flex-col">
       {/* Header */}
       <Header />
 
@@ -386,7 +386,7 @@ export default function ListingsPage() {
                     {/* Clear button (desktop) */}
                     <button
                       onClick={clearFilters}
-                      className="hidden md:inline-block text-yellow-500 hover:text-yellow-400 text-sm"
+                      className="hidden md:inline-block text-[#9e8ffb] hover:text-[#be84fb] text-sm"
                     >
                       Clear
                     </button>

@@ -207,7 +207,7 @@ import ClosingCTA from "../components/ClosingCTA";
 /** ---------- HEADER ---------- */
 function PropertyHeader({ property, onBack }) {
   return (
-    <header className="sticky top-0 z-50 w-full bg-black/90 backdrop-blur-sm border-b border-white/10">
+    <header className="sticky top-0 z-50 w-full bg-[#091020] backdrop-blur-sm border-b border-white/10">
       {/* ⬇️ Narrow on mobile, wide again on lg+ */}
       <div className="mx-auto w-full max-w-3xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] px-4 lg:px-6 xl:px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -321,8 +321,14 @@ export default function PropertyDetailPage() {
     );
   }
 
+  const scrollIntoFinancials = () => {
+  const el = document.getElementById("financial-overview");
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+};
+
+
   return (
-    <div className="w-full min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="w-full min-h-screen bg-[#091020] text-white overflow-x-hidden">
       <PropertyHeader property={property} onBack={handleBack} />
 
       {/* Page container: mobile clamp; desktop wide */}
@@ -330,7 +336,7 @@ export default function PropertyDetailPage() {
         <div className="mx-auto w-full max-w-3xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-[1400px] px-4 lg:px-6 xl:px-8">
           {/* Each section kept safe; wide components can breathe on lg+ */}
           <section className="w-full overflow-x-hidden">
-            <PropertyHero property={property} />
+            <PropertyHero property={property} onViewDetails={scrollIntoFinancials} />
           </section>
 
           <section className="w-full overflow-x-hidden">
@@ -345,7 +351,7 @@ export default function PropertyDetailPage() {
             <MarketContext property={property} />
           </section>
 
-          <section className="w-full overflow-x-hidden">
+          <section className="w-full overflow-x-hidden"  id="financial-overview">
             <Financials property={property} />
           </section>
 
@@ -380,7 +386,7 @@ export default function PropertyDetailPage() {
               </p>
               <button
                 onClick={scrollIntoOwnership}
-                className="inline-flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold px-6 py-3 rounded-lg transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-[#af89fb] hover:bg-[#af89fb]/20 text-whiite font-bold px-6 py-3 rounded-lg transition-colors"
               >
                 Checkout Now
                 <ArrowRight className="w-5 h-5" />

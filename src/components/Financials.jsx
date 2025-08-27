@@ -453,7 +453,7 @@ function Tabs({ tabs, activeTab, setActiveTab }) {
               onClick={() => setActiveTab(tab.id)}
               className={`h-11 sm:h-12 rounded-md text-sm sm:text-base font-medium
                 ${activeTab === tab.id
-                  ? "bg-yellow-500 text-black"
+                  ? "bg-[#af89fb] text-black"
                   : "text-white/80 hover:text-white hover:bg-white/10"
                 }`}
             >
@@ -756,7 +756,7 @@ const maxInvestmentPerInvestor = hasPerShare
   ].filter(Boolean);
 
   return (
-    <section className="py-16 sm:py-20 bg-black overflow-x-hidden">
+    <section className="py-16 sm:py-20 bg-[#091020] overflow-x-hidden">
       <div className="mx-auto w-full max-w-6xl px-4">
         {/* Heading */}
         <div className="text-center mb-10 sm:mb-16">

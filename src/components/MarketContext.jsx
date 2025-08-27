@@ -57,7 +57,7 @@ export default function MarketContext({ property }) {
   if (nonEmptyStats.length === 0) return null;
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
+    <section className="py-20 bg-[#091020]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Market Context</h2>
