@@ -512,7 +512,7 @@ export default function Financials({ property }) {
 
   const availableTabs = [
     hasOverview && { id: "overview", label: "Overview" },
-    hasCapex && { id: "capex", label: "Capital Expenditure" },
+    hasCapex && { id: "capex", label: "Capital Utilization" },
     hasRevenue && { id: "revenue", label: "Revenue Streams" },
     hasScenarios && { id: "scenarios", label: "Return Scenarios" },
   ].filter(Boolean);
@@ -586,76 +586,107 @@ const maxInvestmentPerInvestor = hasPerShare
 
   /* ---------- overview cards ---------- */
   const overviewCards = [];
-  // if (!isEmpty(property?.startingInvestment)) {
-  //   overviewCards.push(
-  //     <div key="start" className={cardBase(200)}>
-  //       <div>
-  //         <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-  //           <DollarSign className="w-5 h-5 text-green-400" />
-  //           Total Investment
-  //         </h3>
-  //         <div className="text-2xl sm:text-3xl font-bold text-green-400 mb-1 sm:mb-2">
-  //           ${toNumber(property.startingInvestment).toLocaleString()}
-  //         </div>
-  //       </div>
-  //       <div className="text-white/60 text-sm">Starting from</div>
-  //     </div>
-  //   );
-  // }
+ 
   if (!isEmpty(property?.startingInvestment)) {
+  // MINIMUM
   overviewCards.push(
-    <div key="start" className={cardBase(260)}>
-      {/* Header + per-share price */}
+    <div key="min-invest" className={cardBase(220)}>
       <div>
         <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
-          <DollarSign className="w-5 h-5 text-yellow-400" />
-          Total Investment
+          <PiggyBank className="w-5 h-5 text-yellow-400" />
+          Minimum Investment
         </h3>
-       
+        <div className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-1 sm:mb-2">
+          {Number.isFinite(minInvestment) ? money(minInvestment) : "—"}
+        </div>
+        {/* <div className="text-xs text-white/60">
+          ({Math.max(1, minSharesPerInvestor)}{" "}
+          {Math.max(1, minSharesPerInvestor) === 1 ? "share" : "shares"} × {money(perShare)} each)
+        </div> */}
       </div>
+      <div className="text-white/60 text-sm">Per investor (pool of 100)</div>
+    </div>
+  );
 
-  {/* Min/Max blocks inside the same card */}
-<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-
-  {/* Minimum Investment */}
-  <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-    {/* title */}
-    <div className="flex items-center gap-2 mb-1">
-      <PiggyBank className="w-10 h-10 text-yellow-400" />
-      <span className="text-sm text-white/80">Minimum Investment</span>
-    </div>
-    {/* value BELOW the () line */}
-    <div className="text-base sm:text-lg font-semibold">
-      {Number.isFinite(minInvestment) ? money(minInvestment) : "—"}
-    </div>
-     {/* hint/parentheses line */}
-    <div className="text-xs text-white/50 mb-2">
-    /per investor (pool of 100) 
-    </div>
-  </div>
-
-  {/* Maximum Investment (buy entire property) */}
-  <div className="bg-white/5 border border-white/10 rounded-lg p-3">
-    {/* title */}
-    <div className="flex items-center gap-2 mb-1">
-      <Maximize className="w-10 h-10 text-cyan-400" />
-      <span className="text-sm text-white/80">Maximum Investment</span>
-    </div>
-    {/* value BELOW the () line */}
-    <div className="text-base sm:text-lg font-semibold">
-      {Number.isFinite(totalPropertyValue) ? money(totalPropertyValue) : "—"}
-    </div>
-     {/* hint/parentheses line */}
-    <div className="text-xs text-white/50 mb-2">
-      (total property value / 1 party owner)
-    </div>
-  </div>
-
-</div>
-
+  // MAXIMUM (per-investor cap based on props or % of pool)
+  overviewCards.push(
+    <div key="max-invest" className={cardBase(220)}>
+      <div>
+        <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+          <Maximize className="w-5 h-5 text-cyan-400" />
+          Maximum Investment
+        </h3>
+        <div className="text-2xl sm:text-3xl font-bold text-cyan-400 mb-1 sm:mb-2">
+          {Number.isFinite(maxInvestmentPerInvestor) ? money(maxInvestmentPerInvestor) : "—"}
+        </div>
+        {/* <div className="text-xs text-white/60">
+          (up to {cappedShares} {cappedShares === 1 ? "share" : "shares"} • ~{percentOfPool}% of pool)
+        </div> */}
+        {/* Optional tiny hint if you also want to show full buyout when known */}
+        {/* {Number.isFinite(totalPropertyValue) && (
+          <div className="text-[11px] text-white/40 mt-1">
+            Entire buyout: {money(totalPropertyValue)}
+          </div>      
+        )} */}
+      </div>
+      <div className="text-white/60 text-sm">(total property value / 1 party owner)</div>
     </div>
   );
 }
+//   if (!isEmpty(property?.startingInvestment)) {
+//   overviewCards.push(
+//     <div key="start" className={cardBase(260)}>
+//       {/* Header + per-share price */}
+//       <div>
+//         <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
+//           <DollarSign className="w-5 h-5 text-yellow-400" />
+//           Total Investment
+//         </h3>
+       
+//       </div>
+
+//   {/* Min/Max blocks inside the same card */}
+// <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+//   {/* Minimum Investment */}
+//   <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+//     {/* title */}
+//     <div className="flex items-center gap-2 mb-1">
+//       <PiggyBank className="w-10 h-10 text-yellow-400" />
+//       <span className="text-sm text-white/80">Minimum Investment</span>
+//     </div>
+//     {/* value BELOW the () line */}
+//     <div className="text-base sm:text-lg font-semibold">
+//       {Number.isFinite(minInvestment) ? money(minInvestment) : "—"}
+//     </div>
+//      {/* hint/parentheses line */}
+//     <div className="text-xs text-white/50 mb-2">
+//     /per investor (pool of 100) 
+//     </div>
+//   </div>
+
+//   {/* Maximum Investment (buy entire property) */}
+//   <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+//     {/* title */}
+//     <div className="flex items-center gap-2 mb-1">
+//       <Maximize className="w-10 h-10 text-cyan-400" />
+//       <span className="text-sm text-white/80">Maximum Investment</span>
+//     </div>
+//     {/* value BELOW the () line */}
+//     <div className="text-base sm:text-lg font-semibold">
+//       {Number.isFinite(totalPropertyValue) ? money(totalPropertyValue) : "—"}
+//     </div>
+//      {/* hint/parentheses line */}
+//     <div className="text-xs text-white/50 mb-2">
+//       (total property value / 1 party owner)
+//     </div>
+//   </div>
+
+// </div>
+
+//     </div>
+//   );
+// }
 
   if (!isEmpty(property?.roiRange)) {
     const [beforePercent, afterPercent] = String(property.roiRange).split("%", 2);
@@ -667,11 +698,13 @@ const maxInvestmentPerInvestor = hasPerShare
             Expected Returns
           </h3>
           <div className="text-2xl sm:text-3xl font-bold text-green-400 mb-1">{beforePercent}%</div>
-          {!!afterPercent && (
-            <div className="text-xs italic text-white/70 mb-1 sm:mb-2">({afterPercent.trim()})</div>
-          )}
+          {/* {!!afterPercent && (
+            <div className="text-[10px] italic text-white/70 mb-1 sm:mb-2">({afterPercent.trim()})</div>
+          )} */}
         </div>
-        <div className="text-white/60 text-sm">Annual yield</div>
+        <div className="text-white/60 text-xs"> {!!afterPercent && (
+            <div className="">({afterPercent.trim()})</div>
+          )}</div>
       </div>
     );
   }
@@ -683,11 +716,11 @@ const maxInvestmentPerInvestor = hasPerShare
             <Clock className="w-5 h-5 text-blue-400" />
             Investment Term
           </h3>
-          <div className="text-2xl sm:text-3xl font-bold text-blue-400 mb-1 sm:mb-2">
+          <div className="text-3xl sm:text-3xl font-bold text-blue-400 mb-1 sm:mb-2">
             {property.lockInPeriod}
           </div>
         </div>
-        <div className="text-white/60 text-sm">Years</div>
+        <div className="text-white/60 text-sm">Investment period</div>
       </div>
     );
   }
@@ -750,7 +783,7 @@ const maxInvestmentPerInvestor = hasPerShare
 
   const tabs = [
     !overviewCards.length ? null : { id: "overview", label: "Overview" },
-    !capexCards.length ? null : { id: "capex", label: "Capital Expenditure" },
+    !capexCards.length ? null : { id: "capex", label: "Capital Utilization" },
     !revenueCards.length ? null : { id: "revenue", label: "Revenue Streams" },
     !scenarioCards.length ? null : { id: "scenarios", label: "Return Scenarios" },
   ].filter(Boolean);

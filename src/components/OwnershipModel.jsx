@@ -95,40 +95,50 @@ export default function OwnershipModel({ property }) {
         {/* Investment Tiers */}
         <div className="max-w-6xl mx-auto">
           <h3 className="text-2xl font-bold text-center mb-8">Blueprint Tiers</h3>
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {tiers.map((tier, i) => (
-            <div key={i} className={`relative rounded-2xl p-8 text-center border-2 ${
-              tier.highlight 
-                ? 'border-[#af89fb] bg-yellow-500/10' 
-                : 'border-white/20 bg-white/5'
-            }`}>
-              {tier.highlight && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#af89fb] text-black px-4 py-1 rounded-full text-sm font-bold">
-                  POPULAR
-                </div>
-              )}
-              
-              <h3 className="text-2xl font-bold mb-4">{tier.name}</h3>
-              <div className="text-4xl font-bold mb-6">{tier.price}</div>
-              
-              <div className="space-y-3 mb-8">
-                {tier.features.map((feature, j) => (
-                  <div key={j} className="text-white/80">{feature}</div>
-                ))}
-              </div>
-              
-              <button
-               onClick={() => window.location.href = tier.checkoutUrl}
-               className={`w-full py-3 rounded-lg font-bold transition-colors ${
-                tier.highlight
-                  ? 'bg-[#af89fb] hover:bg-[#af89fb]/20 text-white'
-                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-              }`}>
-                Get Started
-              </button>
-            </div>
-          ))}
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch">
+  {tiers.map((tier, i) => (
+    <div
+      key={i}
+      className={`relative flex flex-col h-full rounded-2xl p-8 text-center border-2 ${
+        tier.highlight
+          ? "border-[#af89fb] bg-yellow-500/10"
+          : "border-white/20 bg-white/5"
+      }`}
+    >
+      {tier.highlight && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#af89fb] text-black px-4 py-1 rounded-full text-sm font-bold">
+          POPULAR
         </div>
+      )}
+
+      <h3 className="text-2xl font-bold mb-4">{tier.name}</h3>
+      <div className="text-4xl font-bold mb-6">{tier.price}</div>
+
+      {/* content area – can vary in height */}
+      <div className="space-y-3 mb-8">
+        {tier.features.map((feature, j) => (
+          <div key={j} className="text-white/80">{feature}</div>
+        ))}
+      </div>
+
+      {/* push button to bottom */}
+      <div className="mt-auto">
+        <button
+          onClick={() => (window.location.href = tier.checkoutUrl)}
+          className={`w-full py-3 rounded-lg font-bold transition-colors ${
+            tier.highlight
+              ? "bg-[#af89fb] hover:bg-[#af89fb]/20 text-white"
+              : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          }`}
+        >
+          Get Started
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
         </div>
       </div>
     </section>

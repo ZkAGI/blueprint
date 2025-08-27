@@ -32,6 +32,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import EcoluxuryPage from './pages/EcoLuxury';
 import ListingsPage from './pages/ListingPage';
+import ImagePage from './pages/ImagePage';
 import PropertyDetailPage from './pages/PropertyDetail';
 import reportWebVitals from './reportWebVitals';
 
@@ -43,6 +44,8 @@ const router = createBrowserRouter([
 
   { path: '/property/:slug', element: <PropertyDetailPage /> },
   { path: '/property/:slug/:id', element: <PropertyDetailPage /> },
+
+    { path: '/image', element: <ImagePage /> },
   
   { path: '*', element: <div style={{ padding: 24, color: 'white', backgroundColor: 'black', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Page Not Found</div> },
 ]);
