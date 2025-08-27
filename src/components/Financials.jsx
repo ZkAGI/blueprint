@@ -756,7 +756,7 @@ const maxInvestmentPerInvestor = hasPerShare
   ].filter(Boolean);
 
   return (
-    <section className="py-16 sm:py-20 bg-[#091020] overflow-x-hidden">
+    <section className="py-16 sm:py-20  overflow-x-hidden">
       <div className="mx-auto w-full max-w-6xl px-4">
         {/* Heading */}
         <div className="text-center mb-10 sm:mb-16">

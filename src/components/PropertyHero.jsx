@@ -20,7 +20,7 @@ export default function PropertyHero({ property, onViewDetails }) {
   className="w-full h-full object-cover"
 />
 
-        <div className="absolute inset-0 bg-[#091020]" />
+        <div className="absolute inset-0 " />
       </div>
       
       {/* Content */}
