@@ -870,7 +870,7 @@ function HighlightsSection() {
               {[
                 "AI-powered ROI modeling",
                 "Heat reuse & sustainable integration", 
-                "Legally structured SPV (Singapore/BVI)",
+                "Legally structured SPV",
                 "Aten Ventures deal flow"
               ].map((highlight, i) => (
                 <div key={i} className="flex items-center gap-4">
