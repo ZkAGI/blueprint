@@ -472,6 +472,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import PropertyHero from "../components/PropertyHero";
 import ExecutiveSnapshot from "../components/ExecutiveSnapshot";
+import KeyFactsFromDescription from "../components/KeyFactsFromDescription";
 import VisualShowcase from "../components/VisualShowcase";
 import MarketContext from "../components/MarketContext";
 import Financials from "../components/Financials";
@@ -590,6 +591,10 @@ export default function PropertyDetailPage() {
             <section className="w-full overflow-x-hidden">
               <ExecutiveSnapshot property={property} />
             </section>
+
+            <section className="w-full overflow-x-hidden">
+  <KeyFactsFromDescription description={property?.description || ""} />
+</section>
 
             <section className="w-full overflow-x-hidden">
               <VisualShowcase property={property} />
